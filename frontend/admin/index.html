@@ -357,6 +357,21 @@
       </table>
     </div>
   </div>
+
+  <!-- Reset -->
+  <div class="secao">
+    <h2>Reinicializar base de dados</h2>
+    <div class="painel" style="border-color: var(--vermelho)">
+      <p style="color:var(--texto-sub);margin-bottom:1.2rem;font-size:0.9rem">
+        ⚠ Esta acção apaga <strong style="color:var(--texto)">todos os registos</strong> 
+        e o histórico de importações de forma irreversível. 
+        Faz um backup antes se necessário.
+      </p>
+      <button class="btn" style="background:var(--vermelho);color:#ffaaaa" onclick="confirmarReset()">
+        Limpar base de dados
+      </button>
+    </div>
+  </div>
 </main>
 
 <script>
@@ -551,6 +566,29 @@ async function carregarHistorico() {
       </tr>`;
     }).join('');
   } catch(e) {}
+}
+
+// ── Limpar Base de Dados ─────────────────────────────────────────────────────
+
+async function confirmarReset() {
+  const primeira = confirm("Tens a certeza que queres apagar TODOS os registos?\nEsta acção é irreversível.");
+  if (!primeira) return;
+
+  const segunda = confirm("Confirmação final: todos os batismos, casamentos e óbitos serão apagados permanentemente.");
+  if (!segunda) return;
+
+  try {
+    const r = await fetch('/admin/api/reset-db?confirmar=CONFIRMAR', { method: 'DELETE' });
+    const d = await r.json();
+    if (d.sucesso) {
+      mostrarAlerta('sucesso', '✓ ' + d.mensagem);
+      carregarHistorico();
+    } else {
+      mostrarAlerta('erro', d.detail || 'Erro ao limpar a base de dados.');
+    }
+  } catch(e) {
+    mostrarAlerta('erro', 'Erro ao comunicar com o servidor.');
+  }
 }
 
 // ── Alertas ──────────────────────────────────────────────────────────────────
