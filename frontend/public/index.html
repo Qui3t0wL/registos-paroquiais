@@ -144,6 +144,12 @@
   }
   .btn-pesquisar:hover { background: var(--ouro); }
 
+  .btn-ia {
+    background: var(--ouro);
+    color: var(--tinta);
+  }
+  .btn-ia:hover { background: var(--ouro-claro); }
+
   .filtros {
     display: flex;
     flex-wrap: wrap;
@@ -380,6 +386,7 @@
     <div class="campo-principal">
       <input type="text" id="campoPesquisa" placeholder="Pesquisar por nome, pai, mãe, testemunha…" autocomplete="off">
       <button class="btn-pesquisar" onclick="pesquisar(1)">Pesquisar</button>
+      <button class="btn-pesquisar btn-ia" onclick="pesquisarIA(1)">✦ Pesquisa IA</button>
     </div>
     <div class="filtros">
       <div class="filtro-grupo">
@@ -497,6 +504,54 @@ async function pesquisar(pagina) {
   }
 }
 
+async function pesquisarIA(pagina) {
+    const q = document.getElementById('campoPesquisa').value.trim();
+    if (!q) {
+        alert('Escreve uma pesquisa em linguagem natural.\nEx: "joão filho de pedro silva"');
+        return;
+    }
+
+    paginaAtual = pagina;
+    mostrarCarregando();
+
+    try {
+        const params = new URLSearchParams({ q, pagina, por_pagina: 25 });
+        const r = await fetch(`${API}/api/pesquisar-ia?${params}`);
+        const d = await r.json();
+
+        if (!r.ok) {
+            document.getElementById('listaResultados').innerHTML =
+                `<div class="estado"><p>${d.detail || 'Erro na pesquisa IA.'}</p></div>`;
+            return;
+        }
+
+        // Mostrar interpretação
+        if (d.interpretacao) {
+            const etiquetas = {
+                nome: 'Nome', pai: 'Pai', mae: 'Mãe',
+                noivo: 'Noivo', noiva: 'Noiva', testemunha: 'Testemunha',
+                local: 'Local', tipo: 'Tipo', fonte: 'Fonte',
+                ano_min: 'Ano desde', ano_max: 'Ano até'
+            };
+            const partes = Object.entries(d.interpretacao)
+                .map(([k, v]) => `<span style="background:rgba(196,154,42,0.15);padding:0.15rem 0.4rem;border-radius:2px;font-size:0.8rem"><span style="color:var(--tinta-clara)">${etiquetas[k] || k}:</span> ${v}</span>`)
+                .join(' ');
+
+            const info = document.getElementById('infoResultados');
+            info.style.display = 'flex';
+            info.style.flexDirection = 'column';
+            info.style.gap = '0.4rem';
+            document.getElementById('textoResultados').innerHTML =
+                `<div>✦ Interpretado como: ${partes}</div>`;
+        }
+
+        renderResultados(d, '');
+    } catch(e) {
+        document.getElementById('listaResultados').innerHTML =
+            `<div class="estado"><p>Erro ao contactar o servidor.</p></div>`;
+    }
+}
+  
 function mostrarCarregando() {
   document.getElementById('infoResultados').style.display = 'none';
   document.getElementById('listaResultados').innerHTML =
