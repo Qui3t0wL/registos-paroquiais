@@ -10,5 +10,7 @@ services:
     volumes:
       - ./data:/data      # Base de dados persistente
       - ./frontend:/app/frontend:ro
+    env_file:
+      - .env
     environment:
       - DB_PATH=/data/registos.db
