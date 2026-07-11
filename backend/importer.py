@@ -77,12 +77,11 @@ ANO_MIN = 1500
 ANO_MAX = 2100
 
 
-def limpar(val: Any) -> Optional[str]:
-    """Converte qualquer valor para string limpa ou None."""
+def limpar(val: Any) -> str:
     if val is None:
-        return None
+        return "n/d"
     s = str(val).strip()
-    return s if s else None
+    return s if s else "n/d"
 
 
 def validar_ano(val: Any) -> tuple[Optional[int], Optional[str]]:
