@@ -214,6 +214,7 @@ async def fazer_upload(
     request: Request,
     ficheiro: UploadFile = File(...),
     tipo: str = Query(...),
+    freguesia: str = Query(default=None, max_length=100),
     _=Depends(verificar_ip_local),
 ):
     verificar_rate_limit(request, "upload")
@@ -221,13 +222,17 @@ async def fazer_upload(
     conteudo = await ficheiro.read()
     validar_ficheiro(ficheiro.filename, conteudo)
     importer = ExcelImporter(db)
-    return importer.validar_e_importar(conteudo, tipo, ficheiro.filename, dry_run=True)
+    return importer.validar_e_importar(
+        conteudo, tipo, ficheiro.filename,
+        dry_run=True, freguesia=freguesia
+    )
 
 @app.post("/admin/api/confirmar-upload")
 async def confirmar_upload(
     request: Request,
     ficheiro: UploadFile = File(...),
     tipo: str = Query(...),
+    freguesia: str = Query(default=None, max_length=100),
     _=Depends(verificar_ip_local),
 ):
     verificar_rate_limit(request, "upload")
@@ -235,7 +240,10 @@ async def confirmar_upload(
     conteudo = await ficheiro.read()
     validar_ficheiro(ficheiro.filename, conteudo)
     importer = ExcelImporter(db)
-    return importer.validar_e_importar(conteudo, tipo, ficheiro.filename, dry_run=False)
+    return importer.validar_e_importar(
+        conteudo, tipo, ficheiro.filename,
+        dry_run=False, freguesia=freguesia
+    )
 
 @app.delete("/admin/api/reset-db")
 def reset_db(request: Request, confirmar: str = Query(...), _=Depends(verificar_ip_local)):
@@ -251,6 +259,15 @@ def reset_db(request: Request, confirmar: str = Query(...), _=Depends(verificar_
     conn.close()
     logger.info("Base de dados reinicializada.")
     return {"sucesso": True, "mensagem": "Base de dados limpa."}
+
+@app.get("/api/estatisticas-freguesias")
+def estatisticas_freguesias(request: Request):
+    verificar_rate_limit(request, "pesquisa")
+    return db.estatisticas_por_freguesia()
+
+@app.get("/admin/api/freguesias")
+def listar_freguesias(request: Request, _=Depends(verificar_ip_local)):
+    return db.listar_freguesias()
 
 # ── Servir frontends estáticos ────────────────────────────────────────────────
 
