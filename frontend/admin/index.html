@@ -24,7 +24,7 @@
     --batismo:   #4A5E76;
     --casamento: #7C5C8A;
     --obito:     #8A3A2A;
-}
+	}
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -281,6 +281,44 @@
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg2); }
   ::-webkit-scrollbar-thumb { background: var(--linha); border-radius: 3px; }
+
+	/* ── Mobile (≤ 640px) ── */
+	@media (max-width: 640px) {
+	  /* Header */
+	  header { padding: 0 1rem; height: 52px; }
+	  .logo-texto { font-size: 0.85rem; }
+	  .logo-sub { display: none; }
+	  .header-link { font-size: 0.72rem; }
+	
+	  /* Layout */
+	  main { padding: 1rem; }
+	  .painel { padding: 1rem; }
+	  h2 { font-size: 1.1rem; }
+	
+	  /* Zona de upload */
+	  .zona-drop { max-width: 100%; padding: 1.5rem 1rem; }
+	  .grupo select,
+	  .grupo input[type="file"] { max-width: 100%; }
+	
+	  /* Botões */
+	  .btn { width: 100%; text-align: center; }
+	  .acoes-relatorio { flex-direction: column; }
+	
+	  /* Estatísticas do relatório */
+	  .estatistica-row { gap: 1rem; }
+	  .estat-num { font-size: 1.4rem; }
+	
+	  /* Tabela de histórico */
+	  .tabela-historico { font-size: 0.78rem; display: block; overflow-x: auto; }
+	  .tabela-historico th,
+	  .tabela-historico td { padding: 0.5rem 0.5rem; white-space: nowrap; }
+	}
+	
+	/* ── Mobile pequeno (≤ 375px) ── */
+	@media (max-width: 375px) {
+	  .logo-icon { width: 26px; height: 26px; font-size: 13px; }
+	  h2 { font-size: 1rem; }
+	}
 </style>
 </head>
 <body>
