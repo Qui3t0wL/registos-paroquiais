@@ -188,9 +188,7 @@ Omite campos não mencionados. Devolve apenas o JSON.""",
         filtros = json.loads(filtros_raw)
         usou_ia = True
 
-    except Exception as e:
-        import traceback
-        traceback.print_exc()  # aparece nos logs do docker
+    except Exception:
         # Fallback para interpretação por padrões
         from parser import interpretar_query
         filtros = interpretar_query(q)
