@@ -239,6 +239,23 @@
   .btn-ia:hover { background: #e8623a; }
   .btn-ia svg { width: 13px; height: 13px; }
 
+  .btn-ajuda {
+    width: 36px; height: 36px;
+    border-radius: 6px;
+    border: 1.5px solid var(--linha);
+    background: var(--branco);
+    color: var(--texto-sub);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .btn-ajuda:hover {
+    border-color: var(--azul-medio);
+    color: var(--azul-medio);
+  }
+
   .filtros {
     display: flex;
     flex-wrap: wrap;
@@ -504,6 +521,33 @@
     font-size: 0.8rem;
   }
 
+  .ajuda-exemplos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .ajuda-ex {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.8rem;
+    align-items: center;
+    padding: 0.5rem 0.7rem;
+    background: var(--bg);
+    border-radius: 5px;
+    border: 1px solid var(--linha);
+  }
+  .ajuda-query {
+    font-family: monospace;
+    font-size: 0.82rem;
+    color: var(--azul-escuro);
+    font-weight: 500;
+  }
+  .ajuda-desc {
+    font-size: 0.75rem;
+    color: var(--texto-sub);
+    white-space: nowrap;
+  }
+
   /* ── Estado vazio ── */
   .estado {
     text-align: center;
@@ -529,6 +573,77 @@
     .card-ano { grid-column: 2; grid-row: 1; text-align: right; }
     .btns-pesquisa { flex-wrap: wrap; }
   }
+
+  /* ── Mobile (≤ 640px) ── */
+@media (max-width: 640px) {
+  /* Header */
+  header { padding: 0 1rem; height: 52px; }
+  .logo-texto { font-size: 0.85rem; }
+  .logo-sub { display: none; }
+  .header-nav .btn-nav { padding: 0.35rem 0.6rem; font-size: 0.72rem; }
+
+  /* Stats bar */
+  .stats-bar { gap: 0; }
+  .stat { padding: 0.6rem 0.8rem; flex: 1; }
+  .stat-valor { font-size: 1.1rem; }
+  .stat-label { font-size: 0.58rem; letter-spacing: 0.04em; }
+  .stat-dot { display: none; }
+
+  /* Painel de pesquisa */
+  .painel-pesquisa { padding: 0.9rem; }
+  .campo-principal { flex-direction: column; gap: 0.4rem; }
+  .campo-principal input { font-size: 0.9rem; padding: 0.6rem 0.8rem; }
+  .btns-pesquisa { display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.4rem; }
+  .btn-pesquisar { padding: 0.6rem 0.5rem; font-size: 0.78rem; text-align: center; }
+  .btn-ajuda { width: 38px; }
+
+  /* Filtros */
+  .filtros { flex-direction: column; gap: 0.5rem; }
+  .filtro-grupo select,
+  .filtro-grupo input { width: 100%; max-width: 100%; }
+  .filtro-anos { width: 100%; }
+  .filtro-anos input { flex: 1; }
+  .btn-limpar { margin-top: 0; width: 100%; }
+
+  /* Interpretação IA */
+  .ia-interpretacao { flex-wrap: wrap; gap: 0.3rem; font-size: 0.75rem; }
+  .ia-chip { font-size: 0.7rem; }
+
+  /* Cards */
+  .card { grid-template-columns: auto 1fr; gap: 0.3rem 0.6rem; padding: 0.75rem 0.8rem; }
+  .card-ano { grid-column: 1; grid-row: 1; font-size: 0.85rem; color: var(--texto-sub); font-weight: 500; }
+  .badge { grid-column: 2; grid-row: 1; justify-self: start; }
+  .card > div { grid-column: 1 / -1; }
+  .card-nome { font-size: 0.88rem; }
+  .card-detalhe { font-size: 0.72rem; }
+
+  /* Modal detalhe */
+  .modal { border-radius: 10px 10px 0 0; max-height: 92vh; }
+  .overlay.aberto { align-items: flex-end; padding: 0; }
+  .modal-header { padding: 1rem; }
+  .modal-titulo { font-size: 1rem; }
+  .modal-corpo { padding: 1rem; }
+  .modal-grid { grid-template-columns: 1fr; }
+  .modal-campo.largo { grid-column: 1; }
+
+  /* Modal ajuda */
+  .ajuda-ex { grid-template-columns: 1fr; gap: 0.2rem; }
+  .ajuda-desc { white-space: normal; }
+
+  /* Estatísticas */
+  .stats-grid { grid-template-columns: 1fr; }
+  .stats-card { padding: 1rem; }
+  .barra-linha { grid-template-columns: 65px 1fr 35px; font-size: 0.72rem; }
+}
+
+/* ── Mobile pequeno (≤ 375px) ── */
+@media (max-width: 375px) {
+  .stat-valor { font-size: 0.95rem; }
+  .btns-pesquisa { grid-template-columns: 1fr auto auto; }
+  .btn-pesquisar:first-child { grid-column: 1 / -1; }
+  .logo-icon { width: 26px; height: 26px; font-size: 13px; }
+}
+
 </style>
 </head>
 <body>
@@ -577,6 +692,7 @@
             </svg>
             Pesquisa IA
           </button>
+          <button class="btn-ajuda" onclick="abrirAjuda()" title="Ajuda">?</button>
         </div>
       </div>
       <div class="filtros">
@@ -666,6 +782,67 @@
   </div>
 </div>
 
+<!-- Modal de ajuda -->
+<div class="overlay" id="overlayAjuda" onclick="fecharAjuda(event)">
+  <div class="modal" id="modalAjuda" style="max-width:600px">
+    <div class="modal-header">
+      <div class="modal-header-info">
+        <div class="modal-titulo">Guia de Pesquisa</div>
+      </div>
+      <button class="modal-fechar" onclick="fecharAjuda()">✕</button>
+    </div>
+    <div class="modal-corpo">
+
+      <div class="modal-secao">
+        <div class="modal-secao-titulo">Pesquisa simples</div>
+        <p style="font-size:0.85rem;color:var(--texto-sub);margin-bottom:0.8rem">
+          Escreve um ou mais termos — o sistema pesquisa em todos os campos (nome, pai, mãe, avós, testemunhas, notas).
+        </p>
+        <div class="ajuda-exemplos">
+          <div class="ajuda-ex"><span class="ajuda-query">Silva</span><span class="ajuda-desc">Todos os registos com "Silva" em qualquer campo</span></div>
+          <div class="ajuda-ex"><span class="ajuda-query">João Silva</span><span class="ajuda-desc">Registos que contenham "João" E "Silva"</span></div>
+        </div>
+      </div>
+
+      <div class="modal-secao">
+        <div class="modal-secao-titulo">Pesquisa IA — linguagem natural</div>
+        <p style="font-size:0.85rem;color:var(--texto-sub);margin-bottom:0.8rem">
+          Usa o botão <strong style="color:var(--laranja)">✦ Pesquisa IA</strong> para pesquisar em português corrente.
+          A IA interpreta a frase e extrai os filtros automaticamente.
+        </p>
+        <div class="ajuda-exemplos">
+          <div class="ajuda-ex"><span class="ajuda-query">filho de João Frade e Maria Salgueira</span><span class="ajuda-desc">Pai e mãe</span></div>
+          <div class="ajuda-ex"><span class="ajuda-query">Manuel casado com Ana Ferreira</span><span class="ajuda-desc">Casamento entre duas pessoas</span></div>
+          <div class="ajuda-ex"><span class="ajuda-query">óbitos da família Rodrigues no século XIX</span><span class="ajuda-desc">Tipo + apelido + período</span></div>
+          <div class="ajuda-ex"><span class="ajuda-query">batismos em Aldeia do Meio entre 1820 e 1850</span><span class="ajuda-desc">Tipo + local + intervalo de anos</span></div>
+          <div class="ajuda-ex"><span class="ajuda-query">cujo avô paterno era Manuel Costa</span><span class="ajuda-desc">Avô paterno</span></div>
+          <div class="ajuda-ex"><span class="ajuda-query">cuja avó materna era Isabel Sousa</span><span class="ajuda-desc">Avó materna</span></div>
+          <div class="ajuda-ex"><span class="ajuda-query">neto paterno de António Faria</span><span class="ajuda-desc">Avô paterno por linha descendente</span></div>
+        </div>
+      </div>
+
+      <div class="modal-secao">
+        <div class="modal-secao-titulo">Filtros manuais</div>
+        <p style="font-size:0.85rem;color:var(--texto-sub)">
+          Usa os filtros abaixo da barra de pesquisa para restringir por
+          <strong>tipo de registo</strong>, <strong>período</strong> (ano mínimo e máximo)
+          e <strong>fonte</strong> de arquivo. Podem ser combinados com qualquer pesquisa.
+        </p>
+      </div>
+
+      <div class="modal-secao" style="margin-bottom:0">
+        <div class="modal-secao-titulo">Dicas</div>
+        <ul style="font-size:0.85rem;color:var(--texto-sub);padding-left:1.2rem;display:flex;flex-direction:column;gap:0.4rem">
+          <li>A pesquisa <strong>não</strong> é sensível a maiúsculas — "silva" e "Silva" dão o mesmo resultado</li>
+          <li>Clica nos números no topo (Batismos, Casamentos, Óbitos) para filtrar directamente por tipo</li>
+          <li>Clica em qualquer resultado para ver o registo completo</li>
+          <li>Para os avós, especifica sempre o ramo: <em>paterno</em> ou <em>materno</em></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
 <script>
 const API = '';
 let paginaAtual = 1;
@@ -881,6 +1058,25 @@ function esconderInterpretacao() {
   el.innerHTML = '';
 }
 
+// ── Ajuda ──-------------───────────────────────────────────────────────────────
+function abrirAjuda() {
+  document.getElementById('overlayAjuda').classList.add('aberto');
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharAjuda(e) {
+  if (e && e.target !== document.getElementById('overlayAjuda')) return;
+  document.getElementById('overlayAjuda').classList.remove('aberto');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    fecharModal({ target: document.getElementById('overlay') });
+    fecharAjuda({ target: document.getElementById('overlayAjuda') });
+  }
+});
+  
 // ── Render resultados ─────────────────────────────────────────────────────────
 
 function mostrarCarregando() {
