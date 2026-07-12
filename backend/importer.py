@@ -113,7 +113,7 @@ class ExcelImporter:
         self.db = db
 
     def validar_e_importar(
-        self, conteudo: bytes, tipo: str, nome_ficheiro: str, dry_run: bool
+        self, conteudo: bytes, tipo: str, nome_ficheiro: str, dry_run: bool, freguesia: str = None
     ) -> dict:
         mapa = MAPA_COLUNAS[tipo]
         obrigatorios = CAMPOS_OBRIGATORIOS[tipo]
@@ -154,8 +154,12 @@ class ExcelImporter:
 
         if not dry_run and not erros_criticos:
             upload_id = self.db.criar_upload(
-                nome_ficheiro, tipo, len(todos_registos), len(todos_avisos)
+                nome_ficheiro, tipo, len(todos_registos), len(todos_avisos), freguesia
             )
+            # Após inserir, extrair e guardar código do arquivo
+            codigo = self.db.extrair_codigo_adist(upload_id, tipo)
+            if codigo:
+                self.db.actualizar_codigo_adist(upload_id, codigo)
             if tipo == "batismo":
                 self.db.inserir_batismos(todos_registos, upload_id)
             elif tipo == "casamento":
