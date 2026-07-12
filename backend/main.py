@@ -15,7 +15,7 @@ from database import Database
 from importer import ExcelImporter
 from security import (
     verificar_rate_limit, sanitizar_input, validar_tipo_registo,
-    validar_ano, validar_pagina, validar_ficheiro, SECURITY_HEADERS, logger
+    validar_ano, validar_pagina, validar_ficheiro, SECURITY_HEADERS, logger, AuditoriaMiddleware
 )
 
 app = FastAPI(title="Registos Paroquiais API", docs_url=None, redoc_url=None)
@@ -27,6 +27,8 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         for header, valor in SECURITY_HEADERS.items():
             response.headers[header] = valor
+        # Registar acesso
+        await auditoria_mw.registar(request, response.status_code)
         return response
 
 app.add_middleware(SecurityHeadersMiddleware)
@@ -41,6 +43,7 @@ app.add_middleware(
 )
 
 db = Database()
+auditoria_mw = AuditoriaMiddleware(db)
 
 # ── Protecção de IP local para admin ─────────────────────────────────────────
 
@@ -199,6 +202,12 @@ Devolve APENAS o JSON. Nenhuma palavra adicional.""",
 def listar_uploads(request: Request, _=Depends(verificar_ip_local)):
     verificar_rate_limit(request, "admin")
     return db.listar_uploads()
+
+@app.get("/admin/api/auditoria")
+def obter_auditoria(request: Request, _=Depends(verificar_ip_local)):
+    verificar_rate_limit(request, "admin")
+    db.limpar_auditoria_antiga()
+    return db.obter_auditoria()
 
 @app.post("/admin/api/upload")
 async def fazer_upload(
