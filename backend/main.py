@@ -7,6 +7,7 @@ import uvicorn
 import os
 import anthropic
 import json
+import re
 
 from database import Database
 from importer import ExcelImporter
@@ -171,7 +172,20 @@ Omite campos não mencionados. Devolve apenas o JSON.""",
             messages=[{"role": "user", "content": q}]
         )
 
-        filtros = json.loads(resposta.content[0].text)
+        filtros_raw = resposta.content[0].text.strip()
+        
+        # Remover markdown code blocks se presentes
+        if filtros_raw.startswith("```"):
+            filtros_raw = filtros_raw.split("```")[1]
+            if filtros_raw.startswith("json"):
+                filtros_raw = filtros_raw[4:]
+            filtros_raw = filtros_raw.strip()
+        
+        # Extrair JSON se houver texto à volta
+        match = re.search(r'\{.*\}', filtros_raw, re.DOTALL)
+        filtros_raw = match.group(0) if match else filtros_raw
+        
+        filtros = json.loads(filtros_raw)
         usou_ia = True
 
     except Exception as e:
