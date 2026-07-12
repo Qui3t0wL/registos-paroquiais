@@ -41,12 +41,13 @@ class Database:
         conn = self._conn()
         cur = conn.cursor()
 
-        # Tabela de uploads
         cur.execute("""
         CREATE TABLE IF NOT EXISTS uploads (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             ficheiro    TEXT NOT NULL,
             tipo        TEXT NOT NULL,
+            freguesia   TEXT,
+            codigo_adist TEXT,
             data_upload TEXT NOT NULL,
             registos    INTEGER DEFAULT 0,
             avisos      INTEGER DEFAULT 0
@@ -420,13 +421,15 @@ class Database:
         conn.commit()
         conn.close()
 
-    def criar_upload(self, ficheiro: str, tipo: str, registos: int, avisos: int) -> int:
+    def criar_upload(self, ficheiro: str, tipo: str, registos: int,
+                     avisos: int, freguesia: str = None) -> int:
         conn = self._conn()
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO uploads (ficheiro, tipo, data_upload, registos, avisos)
-            VALUES (?, ?, ?, ?, ?)
-        """, (ficheiro, tipo, datetime.now().isoformat(timespec="seconds"), registos, avisos))
+            INSERT INTO uploads (ficheiro, tipo, freguesia, data_upload, registos, avisos)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (ficheiro, tipo, freguesia,
+              datetime.now().isoformat(timespec="seconds"), registos, avisos))
         upload_id = cur.lastrowid
         conn.commit()
         conn.close()
@@ -536,3 +539,96 @@ class Database:
         cur.execute("DELETE FROM auditoria WHERE data < datetime('now', '-90 days')")
         conn.commit()
         conn.close()
+
+    def listar_freguesias(self) -> List[str]:
+        """Lista freguesias já introduzidas, sem duplicados."""
+        conn = self._conn()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT DISTINCT freguesia FROM uploads
+            WHERE freguesia IS NOT NULL AND freguesia != ''
+            ORDER BY freguesia
+        """)
+        rows = [r[0] for r in cur.fetchall()]
+        conn.close()
+        return rows
+    
+    def extrair_codigo_adist(self, upload_id: int, tipo: str) -> Optional[str]:
+        """Extrai o código do arquivo distrital a partir dos registos importados."""
+        tabela = {"batismo": "batismos", "casamento": "casamentos", "obito": "obitos"}[tipo]
+        conn = self._conn()
+        cur = conn.cursor()
+        cur.execute(f"""
+            SELECT fonte FROM {tabela}
+            WHERE upload_id = ? AND fonte IS NOT NULL
+            LIMIT 1
+        """, (upload_id,))
+        row = cur.fetchone()
+        conn.close()
+        if not row:
+            return None
+        # Extrair código tipo PABT06 da referência PT/ADSTR/PRQ/PABT06/...
+        import re
+        m = re.search(r'/PRQ/([A-Z0-9]+)/', row[0])
+        return m.group(1) if m else None
+    
+    def actualizar_codigo_adist(self, upload_id: int, codigo: str):
+        conn = self._conn()
+        cur = conn.cursor()
+        cur.execute("UPDATE uploads SET codigo_adist = ? WHERE id = ?", (codigo, upload_id))
+        conn.commit()
+        conn.close()
+    
+    def estatisticas_por_freguesia(self) -> List[dict]:
+        """Estatísticas agrupadas por freguesia com detalhe por tipo."""
+        conn = self._conn()
+        cur = conn.cursor()
+    
+        # Obter todas as freguesias com uploads
+        cur.execute("""
+            SELECT DISTINCT freguesia, codigo_adist
+            FROM uploads
+            WHERE freguesia IS NOT NULL AND freguesia != ''
+            ORDER BY freguesia
+        """)
+        freguesias = [{"nome": r[0], "codigo": r[1]} for r in cur.fetchall()]
+    
+        resultado = []
+        for freg in freguesias:
+            nome = freg["nome"]
+            codigo = freg["codigo"]
+    
+            tipos = {}
+            for tipo, tabela in [
+                ("batismos", "batismos"),
+                ("casamentos", "casamentos"),
+                ("obitos", "obitos"),
+            ]:
+                cur.execute(f"""
+                    SELECT COUNT(*) as total, MIN(ano) as ano_min, MAX(ano) as ano_max
+                    FROM {tabela} t
+                    JOIN uploads u ON t.upload_id = u.id
+                    WHERE u.freguesia = ?
+                """, (nome,))
+                row = dict(cur.fetchone())
+                if row["total"] > 0:
+                    tipos[tipo] = row
+    
+            # Histórico de uploads desta freguesia
+            cur.execute("""
+                SELECT id, ficheiro, tipo, data_upload, registos, avisos
+                FROM uploads
+                WHERE freguesia = ?
+                ORDER BY data_upload DESC
+            """, (nome,))
+            uploads = [dict(r) for r in cur.fetchall()]
+    
+            resultado.append({
+                "nome": nome,
+                "codigo_adist": codigo,
+                "tipos": tipos,
+                "uploads": uploads,
+            })
+    
+        conn.close()
+        return resultado
