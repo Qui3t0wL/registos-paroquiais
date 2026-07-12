@@ -146,9 +146,23 @@ async def pesquisar_ia(
     try:
         client = anthropic.Anthropic(api_key=api_key)
         resposta = client.messages.create(
-            model="claude-haiku-4-5-20251001",
+            model="claude-haiku-4-5",
             max_tokens=300,
-            system="""...""",
+            system="""Responde APENAS com um objecto JSON válido, sem texto adicional, sem markdown, sem explicações.
+Interpreta a pesquisa genealógica e extrai os campos relevantes:
+- nome, pai, mae, noivo, noiva, testemunha, local, fonte, ano_min, ano_max, tipo
+
+Exemplos:
+Input: "joão filho de pedro"
+Output: {"nome":"joão","pai":"pedro"}
+
+Input: "casamentos da família silva em 1823"
+Output: {"tipo":"casamento","nome":"silva","ano_min":1823,"ano_max":1823}
+
+Input: "filho de joão frade e maria salgueira"
+Output: {"pai":"joão frade","mae":"maria salgueira"}
+
+Devolve APENAS o JSON. Nenhuma palavra adicional.""",
             messages=[{"role": "user", "content": q}]
         )
 
