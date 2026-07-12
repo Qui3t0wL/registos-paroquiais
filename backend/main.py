@@ -203,6 +203,11 @@ Omite campos não mencionados. Devolve apenas o JSON.""",
         "interpretacao": filtros,  # mostra ao utilizador o que foi interpretado
         "usou_ia": usou_ia,
     }
+
+@app.get("/api/estatisticas-detalhadas")
+def estatisticas_detalhadas():
+    return db.estatisticas_detalhadas()
+    
 # ── Servir frontends estáticos ────────────────────────────────────────────────
 
 app.mount("/static", StaticFiles(directory="frontend/public"), name="public")
