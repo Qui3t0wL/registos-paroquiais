@@ -76,6 +76,32 @@ def interpretar_query(q: str) -> dict:
         if not re.match(r'^\d+$', candidato):
             filtros["local"] = candidato.title()
 
+    # Avós com ramo explícito
+    m = re.search(r'\bav[oô]\s+paterno\s+(?:era\s+)?([A-Za-zÀ-ú\s]+?)(?:\s+e\s+|\s+em\b|$)', texto, re.I)
+    if m:
+        filtros["avo_paterno"] = m.group(1).strip().title()
+    
+    m = re.search(r'\bav[oó]\s+paterna\s+(?:era\s+)?([A-Za-zÀ-ú\s]+?)(?:\s+e\s+|\s+em\b|$)', texto, re.I)
+    if m:
+        filtros["avo_paterna"] = m.group(1).strip().title()
+    
+    m = re.search(r'\bav[oô]\s+materno\s+(?:era\s+)?([A-Za-zÀ-ú\s]+?)(?:\s+e\s+|\s+em\b|$)', texto, re.I)
+    if m:
+        filtros["avo_materno"] = m.group(1).strip().title()
+    
+    m = re.search(r'\bav[oó]\s+materna\s+(?:era\s+)?([A-Za-zÀ-ú\s]+?)(?:\s+e\s+|\s+em\b|$)', texto, re.I)
+    if m:
+        filtros["avo_materna"] = m.group(1).strip().title()
+    
+    # "neto/a paterno/a de X"
+    m = re.search(r'\bneto[a]?\s+paterno[a]?\s+de\s+([A-Za-zÀ-ú\s]+?)(?:\s+e\s+|\s+em\b|$)', texto, re.I)
+    if m:
+        filtros["avo_paterno"] = m.group(1).strip().title()
+    
+    m = re.search(r'\bneto[a]?\s+materno[a]?\s+de\s+([A-Za-zÀ-ú\s]+?)(?:\s+e\s+|\s+em\b|$)', texto, re.I)
+    if m:
+        filtros["avo_materno"] = m.group(1).strip().title()
+    
     # Nome principal — primeira(s) palavra(s) que não foram consumidas por outros padrões
     # Remove padrões já interpretados para isolar o nome
     resto = texto
