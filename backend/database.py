@@ -136,7 +136,7 @@ class Database:
             todos.extend(rows)
 
         # Ordenar por ano desc, depois nome
-        todos.sort(key=lambda r: (-(r.get("ano") or 0), r.get("_nome_sort", "")))
+        todos.sort(key=lambda r: ((r.get("ano") or 0), r.get("_nome_sort", "")))
 
         total = len(todos)
         inicio = (pagina - 1) * por_pagina
