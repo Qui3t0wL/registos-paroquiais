@@ -1217,39 +1217,44 @@ const SECOES = {
     { titulo: 'Notas', campos: [{c:'notas',l:'Notas',largo:true}] },
   ],
   casamento: [
-    { titulo: 'Identificação', campos: [
-      {c:'data',l:'Data'},{c:'local',l:'Local'},{c:'ano',l:'Ano'},
-      {c:'nr_ordem',l:'Nº de ordem'},{c:'fls',l:'Fólios'},{c:'fonte',l:'Fonte',largo:true},
-    ]},
-    { titulo: 'Noivo', campos: [
-      {c:'noivo',l:'Nome'},{c:'idade_dnasc_noivo',l:'Idade / D. Nasc.'},
-      {c:'nat_noivo',l:'Naturalidade'},
-      {c:'pai_noivo',l:'Pai'},{c:'nat_pai_noivo',l:'Nat. pai'},
-      {c:'mae_noivo',l:'Mãe'},{c:'nat_mae_noivo',l:'Nat. mãe'},
-    ]},
-    { titulo: 'Noiva', campos: [
-      {c:'noiva',l:'Nome'},{c:'idade_dnasc_noiva',l:'Idade / D. Nasc.'},
-      {c:'nat_noiva',l:'Naturalidade'},
-      {c:'pai_noiva',l:'Pai'},{c:'nat_pai_noiva',l:'Nat. pai'},
-      {c:'mae_noiva',l:'Mãe'},{c:'nat_mae_noiva',l:'Nat. mãe'},
-    ]},
-    { titulo: 'Testemunhas & Notas', campos: [
-      {c:'testemunha1',l:'Testemunha 1'},{c:'testemunha2',l:'Testemunha 2'},
-      {c:'notas',l:'Notas',largo:true},
-    ]},
+      { titulo: 'Identificação', campos: [
+        {c:'data',l:'Data'},{c:'residencia',l:'Residência'},
+        {c:'ano',l:'Ano'},{c:'nr_ordem',l:'Nº de ordem'},
+        {c:'fls',l:'Fólios'},{c:'fonte',l:'Fonte',largo:true},
+      ]},
+      { titulo: 'Noivo', campos: [
+        {c:'noivo',l:'Nome'},{c:'idade_dnasc_noivo',l:'Idade / D. Nasc.'},
+        {c:'nat_noivo',l:'Naturalidade'},
+        {c:'pai_noivo',l:'Pai'},{c:'nat_pai_noivo',l:'Nat. pai'},
+        {c:'mae_noivo',l:'Mãe'},{c:'nat_mae_noivo',l:'Nat. mãe'},
+        {c:'avo_paterno_noivo',l:'Avô paterno'},{c:'avo_paterna_noivo',l:'Avó paterna'},
+        {c:'avo_materno_noivo',l:'Avô materno'},{c:'avo_materna_noivo',l:'Avó materna'},
+      ]},
+      { titulo: 'Noiva', campos: [
+        {c:'noiva',l:'Nome'},{c:'idade_dnasc_noiva',l:'Idade / D. Nasc.'},
+        {c:'nat_noiva',l:'Naturalidade'},
+        {c:'pai_noiva',l:'Pai'},{c:'nat_pai_noiva',l:'Nat. pai'},
+        {c:'mae_noiva',l:'Mãe'},{c:'nat_mae_noiva',l:'Nat. mãe'},
+        {c:'avo_paterno_noiva',l:'Avô paterno'},{c:'avo_paterna_noiva',l:'Avó paterna'},
+        {c:'avo_materno_noiva',l:'Avô materno'},{c:'avo_materna_noiva',l:'Avó materna'},
+      ]},
+      { titulo: 'Testemunhas & Notas', campos: [
+        {c:'testemunha1',l:'Testemunha 1'},{c:'testemunha2',l:'Testemunha 2'},
+        {c:'notas',l:'Notas',largo:true},
+      ]},
   ],
   obito: [
-    { titulo: 'Identificação', campos: [
-      {c:'nome',l:'Nome'},{c:'data_obito',l:'Data de óbito'},
-      {c:'local',l:'Local'},{c:'local_falecimento',l:'Local de falecimento'},
-      {c:'idade',l:'Idade'},{c:'ano',l:'Ano'},
-      {c:'nr_ordem',l:'Nº de ordem'},{c:'fls',l:'Fólios'},{c:'fonte',l:'Fonte',largo:true},
-    ]},
-    { titulo: 'Filiação', campos: [
-      {c:'pai',l:'Pai'},{c:'nat_pai',l:'Naturalidade (pai)'},
-      {c:'mae',l:'Mãe'},{c:'nat_mae',l:'Naturalidade (mãe)'},
-    ]},
-    { titulo: 'Notas', campos: [{c:'notas',l:'Notas',largo:true}] },
+      { titulo: 'Identificação', campos: [
+        {c:'nome',l:'Nome'},{c:'data_obito',l:'Data de óbito'},
+        {c:'local_falecimento',l:'Local de falecimento'},{c:'idade',l:'Idade'},
+        {c:'ano',l:'Ano'},{c:'nr_ordem',l:'Nº de ordem'},
+        {c:'fls',l:'Fólios'},{c:'fonte',l:'Fonte',largo:true},
+      ]},
+      { titulo: 'Filiação', campos: [
+        {c:'pai',l:'Pai'},{c:'nat_pai',l:'Naturalidade (pai)'},
+        {c:'mae',l:'Mãe'},{c:'nat_mae',l:'Naturalidade (mãe)'},
+      ]},
+      { titulo: 'Notas', campos: [{c:'notas',l:'Notas',largo:true}] },
   ],
 };
 
