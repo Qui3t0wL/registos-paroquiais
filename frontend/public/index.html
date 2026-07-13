@@ -1471,16 +1471,18 @@ function renderFreguesia(f) {
 
   const uploadsHtml = f.uploads.map(u => {
     const tipoLabel = { batismo:'Batismos', casamento:'Casamentos', obito:'Óbitos' }[u.tipo] || u.tipo;
-    const data = u.data_upload?.substring(0,10) || '—';
+    const dataHora = u.data_upload?.substring(0,16).replace('T',' ') || '—';
+    const periodo = u.ano_min && u.ano_max
+      ? `${u.ano_min} – ${u.ano_max}`
+      : u.ano_min || u.ano_max || '—';
     return `
-      <div style="display:grid;grid-template-columns:90px 1fr auto auto;
+      <div style="display:grid;grid-template-columns:130px auto 1fr auto;
                   gap:0.5rem;align-items:center;padding:0.5rem 0;
                   border-bottom:1px solid var(--linha);font-size:0.78rem">
-        <span style="color:var(--texto-sub)">${data}</span>
-        <span style="color:var(--texto-sub);overflow:hidden;text-overflow:ellipsis;
-                     white-space:nowrap;font-size:0.72rem">${u.ficheiro}</span>
+        <span style="color:var(--texto-sub)">${dataHora}</span>
         <span class="badge badge-${u.tipo}" style="font-size:0.6rem">${tipoLabel}</span>
-        <span style="font-weight:600;text-align:right">${u.registos.toLocaleString('pt-PT')}</span>
+        <span style="color:var(--texto-sub);font-size:0.72rem">${periodo}</span>
+        <span style="font-weight:600;text-align:right">${u.registos.toLocaleString('pt-PT')} reg.</span>
       </div>
     `;
   }).join('');
