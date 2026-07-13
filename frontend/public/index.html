@@ -19,7 +19,6 @@
     --texto-sub:    #6B7280;
     --linha:        #E5E7EB;
     --bg:           #F6F7F9;
-
     --batismo:      #4A5E76;
     --casamento:    #2A7A6A;
     --obito:        #7C5C8A;
@@ -97,7 +96,6 @@
     background: var(--azul-medio);
     display: flex;
     justify-content: center;
-    gap: 0;
   }
   .stat {
     padding: 0.85rem 2.5rem;
@@ -114,7 +112,6 @@
     background: rgba(255,255,255,0.15);
   }
   .stat:hover { background: rgba(255,255,255,0.08); }
-  .stat.ativo { background: rgba(244,121,74,0.25); }
   .stat-valor {
     font-size: 1.5rem;
     font-weight: 700;
@@ -140,8 +137,7 @@
   /* ── Layout principal ── */
   .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
 
-  /* ── Vista de estatísticas ── */
-  
+  /* ── Estatísticas ── */
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -176,14 +172,12 @@
   .barra-label { color: var(--texto-sub); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .barra-track { background: var(--cinza-claro); border-radius: 2px; height: 8px; overflow: hidden; }
   .barra-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
-  .barra-batismo { background: var(--batismo); }
+  .barra-batismo  { background: var(--batismo); }
   .barra-casamento { background: var(--casamento); }
-  .barra-obito { background: var(--obito); }
+  .barra-obito    { background: var(--obito); }
   .barra-valor { color: var(--texto); font-weight: 500; font-size: 0.75rem; }
 
-  /* ── Pesquisa ── */
-  #vistaPesquisa {}
-
+  /* ── Painel de pesquisa ── */
   .painel-pesquisa {
     background: var(--branco);
     border: 1px solid var(--linha);
@@ -192,7 +186,6 @@
     margin-bottom: 1rem;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
-
   .campo-principal {
     display: flex;
     gap: 0.5rem;
@@ -237,7 +230,6 @@
   }
   .btn-ia:hover { background: #e8623a; }
   .btn-ia svg { width: 13px; height: 13px; }
-
   .btn-ajuda {
     width: 36px; height: 36px;
     border-radius: 6px;
@@ -250,10 +242,7 @@
     transition: all 0.15s;
     flex-shrink: 0;
   }
-  .btn-ajuda:hover {
-    border-color: var(--azul-medio);
-    color: var(--azul-medio);
-  }
+  .btn-ajuda:hover { border-color: var(--azul-medio); color: var(--azul-medio); }
 
   .filtros {
     display: flex;
@@ -286,7 +275,6 @@
   .filtro-anos { display: flex; gap: 0.3rem; align-items: center; }
   .filtro-anos span { color: var(--cinza); font-size: 0.8rem; }
   .filtro-anos input { width: 5.5rem; }
-
   .btn-limpar {
     padding: 0.42rem 0.8rem;
     background: none;
@@ -337,9 +325,8 @@
     font-size: 0.8rem;
   }
 
-  /* ── Cards de resultados ── */
+  /* ── Cards ── */
   .lista-resultados { display: flex; flex-direction: column; gap: 0.4rem; }
-
   .card {
     background: var(--branco);
     border: 1px solid var(--linha);
@@ -358,10 +345,9 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     transform: translateX(2px);
   }
-  .card[data-tipo="batismo"]  { border-left-color: var(--batismo); }
+  .card[data-tipo="batismo"]   { border-left-color: var(--batismo); }
   .card[data-tipo="casamento"] { border-left-color: var(--casamento); }
-  .card[data-tipo="obito"]    { border-left-color: var(--obito); }
-
+  .card[data-tipo="obito"]     { border-left-color: var(--obito); }
   .badge {
     font-size: 0.62rem;
     font-weight: 600;
@@ -376,7 +362,6 @@
   .badge-batismo   { background: #dce8f0; color: #2a4a6a; }
   .badge-casamento { background: #dcf0ec; color: #1a5a4a; }
   .badge-obito     { background: #ecdcf0; color: #5a3a6a; }
-
   .card-nome {
     font-size: 0.95rem;
     font-weight: 600;
@@ -418,6 +403,159 @@
   .btn-pag.ativo { background: var(--azul-escuro); color: var(--branco); border-color: var(--azul-escuro); }
   .btn-pag:disabled { opacity: 0.35; cursor: default; }
 
+  /* ── Layout com painel lateral ── */
+  .layout-resultados {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+  .layout-resultados.sem-facetas { grid-template-columns: 1fr; }
+
+  /* ── Painel de facetas ── */
+  .painel-facetas {
+    background: var(--branco);
+    border: 1px solid var(--linha);
+    border-radius: 8px;
+    overflow: hidden;
+    position: sticky;
+    top: 72px;
+  }
+  .facetas-header {
+    padding: 0.8rem 1rem;
+    background: var(--azul-escuro);
+    color: var(--branco);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .facetas-limpar {
+    background: none;
+    border: none;
+    color: var(--laranja);
+    font-size: 0.68rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .facetas-limpar:hover { text-decoration: underline; }
+  .faceta-grupo { border-bottom: 1px solid var(--linha); overflow: hidden; }
+  .faceta-grupo:last-child { border-bottom: none; }
+  .faceta-titulo {
+    padding: 0.65rem 1rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--texto-sub);
+    background: var(--bg);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+  .faceta-titulo:hover { background: var(--cinza-claro); }
+  .faceta-titulo-seta { transition: transform 0.2s; }
+  .faceta-titulo-seta.fechado { transform: rotate(-90deg); }
+  .faceta-lista {
+    padding: 0.4rem 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .faceta-lista.fechada { display: none; }
+  .faceta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 1rem;
+    cursor: pointer;
+    transition: background 0.1s;
+    font-size: 0.8rem;
+  }
+  .faceta-item:hover { background: var(--bg); }
+  .faceta-item input[type="checkbox"] {
+    accent-color: var(--laranja);
+    width: 13px; height: 13px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .faceta-item-label {
+    flex: 1;
+    color: var(--texto);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .faceta-item-count { font-size: 0.7rem; color: var(--texto-sub); flex-shrink: 0; }
+  .faceta-item.activo .faceta-item-label { color: var(--laranja); font-weight: 500; }
+
+  /* Slider de anos */
+  .faceta-slider { padding: 0.5rem 1rem 0.8rem; }
+  .faceta-slider-vals {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--texto-sub);
+    margin-bottom: 0.4rem;
+  }
+  .faceta-slider input[type="range"] {
+    width: 100%;
+    accent-color: var(--azul-medio);
+    height: 4px;
+  }
+
+  /* ── Botão mobile de filtros ── */
+  .btn-filtrar-mobile {
+    display: none;
+    width: 100%;
+    padding: 0.6rem;
+    background: var(--branco);
+    border: 1.5px solid var(--linha);
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--texto);
+    cursor: pointer;
+    margin-bottom: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+  .btn-filtrar-mobile:hover { border-color: var(--azul-medio); }
+
+  /* ── Drawer mobile ── */
+  .drawer-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(27,31,43,0.5);
+    z-index: 200;
+    backdrop-filter: blur(2px);
+  }
+  .drawer-overlay.aberto { display: block; }
+  .drawer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--branco);
+    border-radius: 12px 12px 0 0;
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: 201;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  .drawer.aberto { transform: translateY(0); }
+  .drawer-handle {
+    width: 36px; height: 4px;
+    background: var(--cinza);
+    border-radius: 2px;
+    margin: 0.8rem auto 0;
+  }
+
   /* ── Modal ── */
   .overlay {
     display: none;
@@ -430,7 +568,6 @@
     backdrop-filter: blur(2px);
   }
   .overlay.aberto { display: flex; }
-
   .modal {
     background: var(--branco);
     border-radius: 10px;
@@ -479,12 +616,8 @@
     transition: background 0.15s;
   }
   .modal-fechar:hover { background: var(--cinza-claro); color: var(--texto); }
-
   .modal-corpo { padding: 1.2rem 1.4rem; }
-
-  .modal-secao {
-    margin-bottom: 1.2rem;
-  }
+  .modal-secao { margin-bottom: 1.2rem; }
   .modal-secao-titulo {
     font-size: 0.65rem;
     font-weight: 600;
@@ -514,17 +647,9 @@
     color: var(--texto);
     line-height: 1.4;
   }
-  .modal-campo span.vazio {
-    color: var(--cinza);
-    font-style: italic;
-    font-size: 0.8rem;
-  }
 
-  .ajuda-exemplos {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
+  /* ── Ajuda ── */
+  .ajuda-exemplos { display: flex; flex-direction: column; gap: 0.4rem; }
   .ajuda-ex {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -541,26 +666,14 @@
     color: var(--azul-escuro);
     font-weight: 500;
   }
-  .ajuda-desc {
-    font-size: 0.75rem;
-    color: var(--texto-sub);
-    white-space: nowrap;
-  }
+  .ajuda-desc { font-size: 0.75rem; color: var(--texto-sub); white-space: nowrap; }
 
   /* ── Estado vazio ── */
-  .estado {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--texto-sub);
-  }
+  .estado { text-align: center; padding: 3rem 1rem; color: var(--texto-sub); }
   .estado-icon { font-size: 2rem; margin-bottom: 0.7rem; opacity: 0.4; }
   .estado p { font-size: 0.9rem; }
 
-  /* ── Scrollbar ── */
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--cinza); border-radius: 3px; }
-
+  /* ── Footer ── */
   footer {
     background: var(--azul-escuro);
     color: var(--cinza);
@@ -574,11 +687,7 @@
     flex-direction: column;
     gap: 0.75rem;
   }
-  .footer-principal {
-    font-size: 0.78rem;
-    line-height: 1.6;
-    color: #9aa3b0;
-  }
+  .footer-principal { font-size: 0.78rem; line-height: 1.6; color: #9aa3b0; }
   .footer-rodape {
     font-size: 0.7rem;
     color: #6b7280;
@@ -586,210 +695,30 @@
     padding-top: 0.75rem;
   }
 
-  /* ── Layout com painel lateral ── */
-  .layout-resultados {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: 1rem;
-    align-items: start;
-  }
-  .layout-resultados.sem-facetas {
-    grid-template-columns: 1fr;
-  }
-  
-  /* ── Painel de facetas ── */
-  .painel-facetas {
-    background: var(--branco);
-    border: 1px solid var(--linha);
-    border-radius: 8px;
-    overflow: hidden;
-    position: sticky;
-    top: 72px;
-  }
-  .facetas-header {
-    padding: 0.8rem 1rem;
-    background: var(--azul-escuro);
-    color: var(--branco);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .facetas-limpar {
-    font-size: 0.68rem;
-    color: var(--cinza);
-    cursor: pointer;
-    background: none;
-    border: none;
-    color: var(--laranja);
-    font-weight: 500;
-    cursor: pointer;
-  }
-  .facetas-limpar:hover { text-decoration: underline; }
-  
-  .faceta-grupo {
-    border-bottom: 1px solid var(--linha);
-    overflow: hidden;
-  }
-  .faceta-grupo:last-child { border-bottom: none; }
-  .faceta-titulo {
-    padding: 0.65rem 1rem;
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--texto-sub);
-    background: var(--bg);
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    user-select: none;
-  }
-  .faceta-titulo:hover { background: var(--cinza-claro); }
-  .faceta-titulo-seta { transition: transform 0.2s; }
-  .faceta-titulo-seta.fechado { transform: rotate(-90deg); }
-  
-  .faceta-lista {
-    padding: 0.4rem 0;
-    max-height: 200px;
-    overflow-y: auto;
-  }
-  .faceta-lista.fechada { display: none; }
-  
-  .faceta-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.3rem 1rem;
-    cursor: pointer;
-    transition: background 0.1s;
-    font-size: 0.8rem;
-  }
-  .faceta-item:hover { background: var(--bg); }
-  .faceta-item input[type="checkbox"] {
-    accent-color: var(--laranja);
-    width: 13px; height: 13px;
-    flex-shrink: 0;
-    cursor: pointer;
-  }
-  .faceta-item-label {
-    flex: 1;
-    color: var(--texto);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .faceta-item-count {
-    font-size: 0.7rem;
-    color: var(--texto-sub);
-    flex-shrink: 0;
-  }
-  .faceta-item.activo .faceta-item-label { color: var(--laranja); font-weight: 500; }
-  
-  /* Slider de anos */
-  .faceta-slider {
-    padding: 0.5rem 1rem 0.8rem;
-  }
-  .faceta-slider-vals {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: var(--texto-sub);
-    margin-bottom: 0.4rem;
-  }
-  .faceta-slider input[type="range"] {
-    width: 100%;
-    accent-color: var(--azul-medio);
-    height: 4px;
-  }
-  
-  /* Botão mobile */
-  .btn-filtrar-mobile {
-    display: none;
-    width: 100%;
-    padding: 0.6rem;
-    background: var(--branco);
-    border: 1.5px solid var(--linha);
-    border-radius: 6px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--texto);
-    cursor: pointer;
-    margin-bottom: 0.75rem;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-  }
-  .btn-filtrar-mobile:hover { border-color: var(--azul-medio); }
-  
-  /* Drawer mobile */
-  .drawer-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(27,31,43,0.5);
-    z-index: 200;
-    backdrop-filter: blur(2px);
-  }
-  .drawer-overlay.aberto { display: block; }
-  .drawer {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--branco);
-    border-radius: 12px 12px 0 0;
-    max-height: 80vh;
-    overflow-y: auto;
-    z-index: 201;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-  }
-  .drawer.aberto { transform: translateY(0); }
-  .drawer-handle {
-    width: 36px; height: 4px;
-    background: var(--cinza);
-    border-radius: 2px;
-    margin: 0.8rem auto 0;
-  }
-  
-  @media (max-width: 640px) {
-    .layout-resultados {grid-template-columns: 1fr !important; }
-    .painel-facetas { display: none; }
-    .btn-filtrar-mobile { display: flex; }
-  }
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--cinza); border-radius: 3px; }
 
-  @media (max-width: 640px) {
-    header { padding: 0 1rem; }
-    .container { padding: 1rem; }
-    .stats-bar { gap: 0; }
-    .stat { padding: 0.7rem 1rem; }
-    .stat-valor { font-size: 1.2rem; }
-    .modal-grid { grid-template-columns: 1fr; }
-    .card { grid-template-columns: auto 1fr; }
-    .card-ano { grid-column: 2; grid-row: 1; text-align: right; }
-    .btns-pesquisa { flex-wrap: wrap; }
-    /* Estatísticas — resumo global */
-    .stats-resumo-global { grid-template-columns: repeat(2, 1fr) !important; }
-  }
-
-  /* ── Mobile (≤ 640px) ── */
+  /* ══════════════════════════════════════
+     MEDIA QUERIES — bloco único consolidado
+     ══════════════════════════════════════ */
   @media (max-width: 640px) {
     /* Header */
     header { padding: 0 1rem; height: 52px; }
     .logo-texto { font-size: 0.85rem; }
     .logo-sub { display: none; }
     .header-nav .btn-nav { padding: 0.35rem 0.6rem; font-size: 0.72rem; }
-  
+
     /* Stats bar */
-    .stats-bar { gap: 0; }
     .stat { padding: 0.6rem 0.8rem; flex: 1; }
     .stat-valor { font-size: 1.1rem; }
     .stat-label { font-size: 0.58rem; letter-spacing: 0.04em; }
     .stat-dot { display: none; }
-  
+
+    /* Container */
+    .container { padding: 1rem; }
+
     /* Painel de pesquisa */
     .painel-pesquisa { padding: 0.9rem; }
     .campo-principal { flex-direction: column; gap: 0.4rem; }
@@ -797,7 +726,7 @@
     .btns-pesquisa { display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.4rem; }
     .btn-pesquisar { padding: 0.6rem 0.5rem; font-size: 0.78rem; text-align: center; }
     .btn-ajuda { width: 38px; }
-  
+
     /* Filtros */
     .filtros { flex-direction: column; gap: 0.5rem; }
     .filtro-grupo select,
@@ -805,49 +734,64 @@
     .filtro-anos { width: 100%; }
     .filtro-anos input { flex: 1; }
     .btn-limpar { margin-top: 0; width: 100%; }
-  
+
     /* Interpretação IA */
     .ia-interpretacao { flex-wrap: wrap; gap: 0.3rem; font-size: 0.75rem; }
     .ia-chip { font-size: 0.7rem; }
-  
+
+    /* Layout e facetas */
+    .layout-resultados { grid-template-columns: 1fr !important; }
+    .painel-facetas { display: none; }
+    .btn-filtrar-mobile { display: flex; }
+
     /* Cards */
-    .card { grid-template-columns: auto 1fr; gap: 0.3rem 0.6rem; padding: 0.75rem 0.8rem; }
-    .card-ano { grid-column: 1; grid-row: 1; font-size: 0.85rem; color: var(--texto-sub); font-weight: 500; }
+    .card {
+      grid-template-columns: auto 1fr;
+      gap: 0.3rem 0.6rem;
+      padding: 0.75rem 0.8rem;
+    }
+    .card-ano {
+      grid-column: 1; grid-row: 1;
+      font-size: 0.85rem;
+      color: var(--texto-sub);
+      font-weight: 500;
+      text-align: left;
+    }
     .badge { grid-column: 2; grid-row: 1; justify-self: start; }
     .card > div { grid-column: 1 / -1; }
     .card-nome { font-size: 0.88rem; }
     .card-detalhe { font-size: 0.72rem; }
-  
-    /* Modal detalhe */
-    .modal { border-radius: 10px 10px 0 0; max-height: 92vh; }
+
+    /* Modal — slide de baixo */
     .overlay.aberto { align-items: flex-end; padding: 0; }
+    .modal { border-radius: 10px 10px 0 0; max-height: 92vh; }
     .modal-header { padding: 1rem; }
     .modal-titulo { font-size: 1rem; }
     .modal-corpo { padding: 1rem; }
     .modal-grid { grid-template-columns: 1fr; }
     .modal-campo.largo { grid-column: 1; }
-  
+
     /* Modal ajuda */
     .ajuda-ex { grid-template-columns: 1fr; gap: 0.2rem; }
     .ajuda-desc { white-space: normal; }
-  
+
     /* Estatísticas */
+    .stats-resumo-global { grid-template-columns: repeat(2, 1fr) !important; }
     .stats-grid { grid-template-columns: 1fr; }
     .stats-card { padding: 1rem; }
     .barra-linha { grid-template-columns: 65px 1fr 35px; font-size: 0.72rem; }
+
     /* Footer */
     footer { padding: 1.5rem 1rem; margin-top: 2rem; }
     .footer-principal { font-size: 0.75rem; }
   }
-  
-  /* ── Mobile pequeno (≤ 375px) ── */
+
   @media (max-width: 375px) {
     .stat-valor { font-size: 0.95rem; }
     .btns-pesquisa { grid-template-columns: 1fr auto auto; }
     .btn-pesquisar:first-child { grid-column: 1 / -1; }
     .logo-icon { width: 26px; height: 26px; font-size: 13px; }
   }
-
 </style>
 </head>
 <body>
@@ -933,14 +877,12 @@
       <span id="textoResultados"></span>
       <span id="textoFiltrados" style="color:var(--laranja);font-weight:500;display:none"></span>
     </div>
-    
-    <button class="btn-filtrar-mobile" id="btnFiltrarMobile" 
-            onclick="abrirDrawer()" style="display:none">
+
+    <button class="btn-filtrar-mobile" id="btnFiltrarMobile" onclick="abrirDrawer()" style="display:none">
       ☰ Filtrar resultados
-      <span id="badgeFiltros" style="display:none;background:var(--laranja);color:#fff;
-            border-radius:10px;padding:0.1rem 0.45rem;font-size:0.7rem"></span>
+      <span id="badgeFiltros" style="display:none;background:var(--laranja);color:#fff;border-radius:10px;padding:0.1rem 0.45rem;font-size:0.7rem"></span>
     </button>
-    
+
     <div class="layout-resultados sem-facetas" id="layoutResultados">
       <div class="painel-facetas" id="painelFacetas" style="display:none">
         <div class="facetas-header">
@@ -949,8 +891,12 @@
         </div>
         <div id="facetasConteudo"></div>
       </div>
+      <div>
+        <div id="listaResultados" class="lista-resultados"></div>
+        <div id="paginacao" class="paginacao"></div>
+      </div>
     </div>
-    
+
     <!-- Drawer mobile -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="fecharDrawer()"></div>
     <div class="drawer" id="drawer">
@@ -961,9 +907,6 @@
       </div>
       <div id="facetasDrawer"></div>
     </div>
-
-    <div id="listaResultados" class="lista-resultados"></div>
-    <div id="paginacao" class="paginacao"></div>
   </div>
 
   <!-- Vista de estatísticas -->
@@ -977,7 +920,7 @@
 
 <!-- Modal de detalhe -->
 <div class="overlay" id="overlay" onclick="fecharModal(event)">
-  <div class="modal" id="modal">
+  <div class="modal">
     <div class="modal-header">
       <div class="modal-header-info">
         <div class="modal-tipo-badge" id="modalTipoBadge"></div>
@@ -991,7 +934,7 @@
 
 <!-- Modal de ajuda -->
 <div class="overlay" id="overlayAjuda" onclick="fecharAjuda(event)">
-  <div class="modal" id="modalAjuda" style="max-width:600px">
+  <div class="modal" style="max-width:600px">
     <div class="modal-header">
       <div class="modal-header-info">
         <div class="modal-titulo">Guia de Pesquisa</div>
@@ -999,7 +942,6 @@
       <button class="modal-fechar" onclick="fecharAjuda()">✕</button>
     </div>
     <div class="modal-corpo">
-
       <div class="modal-secao">
         <div class="modal-secao-titulo">Pesquisa simples</div>
         <p style="font-size:0.85rem;color:var(--texto-sub);margin-bottom:0.8rem">
@@ -1010,319 +952,61 @@
           <div class="ajuda-ex"><span class="ajuda-query">João Silva</span><span class="ajuda-desc">Registos que contenham "João" E "Silva"</span></div>
         </div>
       </div>
-
       <div class="modal-secao">
         <div class="modal-secao-titulo">Pesquisa IA — linguagem natural</div>
         <p style="font-size:0.85rem;color:var(--texto-sub);margin-bottom:0.8rem">
           Usa o botão <strong style="color:var(--laranja)">✦ Pesquisa IA</strong> para pesquisar em português corrente.
-          A IA interpreta a frase e extrai os filtros automaticamente.
         </p>
         <div class="ajuda-exemplos">
           <div class="ajuda-ex"><span class="ajuda-query">filho de João Frade e Maria Salgueira</span><span class="ajuda-desc">Pai e mãe</span></div>
-          <div class="ajuda-ex"><span class="ajuda-query">Manuel casado com Ana Ferreira</span><span class="ajuda-desc">Casamento entre duas pessoas</span></div>
+          <div class="ajuda-ex"><span class="ajuda-query">Manuel casado com Ana Ferreira</span><span class="ajuda-desc">Casamento</span></div>
           <div class="ajuda-ex"><span class="ajuda-query">óbitos da família Rodrigues no século XIX</span><span class="ajuda-desc">Tipo + apelido + período</span></div>
-          <div class="ajuda-ex"><span class="ajuda-query">batismos em Aldeia do Meio entre 1820 e 1850</span><span class="ajuda-desc">Tipo + local + intervalo de anos</span></div>
+          <div class="ajuda-ex"><span class="ajuda-query">batismos em Aldeia do Meio entre 1820 e 1850</span><span class="ajuda-desc">Tipo + local + anos</span></div>
           <div class="ajuda-ex"><span class="ajuda-query">cujo avô paterno era Manuel Costa</span><span class="ajuda-desc">Avô paterno</span></div>
           <div class="ajuda-ex"><span class="ajuda-query">cuja avó materna era Isabel Sousa</span><span class="ajuda-desc">Avó materna</span></div>
-          <div class="ajuda-ex"><span class="ajuda-query">neto paterno de António Faria</span><span class="ajuda-desc">Avô paterno por linha descendente</span></div>
+          <div class="ajuda-ex"><span class="ajuda-query">neto paterno de António Faria</span><span class="ajuda-desc">Avô paterno por descendência</span></div>
         </div>
       </div>
-
       <div class="modal-secao">
         <div class="modal-secao-titulo">Filtros manuais</div>
         <p style="font-size:0.85rem;color:var(--texto-sub)">
-          Usa os filtros abaixo da barra de pesquisa para restringir por
-          <strong>tipo de registo</strong>, <strong>período</strong> (ano mínimo e máximo)
-          e <strong>fonte</strong> de arquivo. Podem ser combinados com qualquer pesquisa.
+          Usa os filtros abaixo da barra de pesquisa para restringir por <strong>tipo</strong>, <strong>período</strong> e <strong>fonte</strong>. Combinam com qualquer pesquisa.
         </p>
       </div>
-
       <div class="modal-secao" style="margin-bottom:0">
         <div class="modal-secao-titulo">Dicas</div>
         <ul style="font-size:0.85rem;color:var(--texto-sub);padding-left:1.2rem;display:flex;flex-direction:column;gap:0.4rem">
-          <li>A pesquisa <strong>não</strong> é sensível a maiúsculas — "silva" e "Silva" dão o mesmo resultado</li>
-          <li>Clica nos números no topo (Batismos, Casamentos, Óbitos) para filtrar directamente por tipo</li>
+          <li>A pesquisa não é sensível a maiúsculas nem a acentos</li>
+          <li>Clica nos totais no topo para filtrar directamente por tipo</li>
           <li>Clica em qualquer resultado para ver o registo completo</li>
           <li>Para os avós, especifica sempre o ramo: <em>paterno</em> ou <em>materno</em></li>
         </ul>
       </div>
-
     </div>
   </div>
 </div>
+
+<footer>
+  <div class="footer-inner">
+    <p class="footer-principal">
+      A informação disponível nesta plataforma foi recolhida a partir da compilação em Excel dos registos de batismos do Dr. Carlos Alves Bento, da transcrição de registos disponíveis no Arquivo Distrital de Santarém e no Arquivo Nacional Torre do Tombo, bem como de alguns registos paroquiais da paróquia de São Sebastião de Mouriscas. Não nos responsabilizamos por eventuais erros de transcrição.
+    </p>
+    <p class="footer-rodape">Plataforma produzida com auxílio de Inteligência Artificial · 2026</p>
+  </div>
+</footer>
+
 <script>
 const API = '';
 let paginaAtual = 1;
 let dadosEstatisticas = null;
+const POR_PAGINA = 25;
 
 // Estado das facetas
 let todosResultados = [];
-let facetasActivas = {};
+let facetasActivas  = {};
 let anoMinGlobal = 1500, anoMaxGlobal = 2100;
 let anoMinActivo = 1500, anoMaxActivo = 2100;
 
-// ── Facetas ───────────────────────────────────────────────────────────────────
-
-function calcularFacetas(resultados) {
-  const facetas = {
-    tipo:       {},
-    local:      {},
-    pai:        {},
-    mae:        {},
-    avos:       {},
-    testemunha: {},
-  };
-
-  resultados.forEach(r => {
-    // Tipo
-    facetas.tipo[r.tipo] = (facetas.tipo[r.tipo] || 0) + 1;
-
-    // Local
-    if (r.local && r.local !== 'n/d') {
-      facetas.local[r.local] = (facetas.local[r.local] || 0) + 1;
-    }
-
-    // Pai
-    if (r.pai && r.pai !== 'n/d') {
-      facetas.pai[r.pai] = (facetas.pai[r.pai] || 0) + 1;
-    }
-
-    // Mãe
-    if (r.mae && r.mae !== 'n/d') {
-      facetas.mae[r.mae] = (facetas.mae[r.mae] || 0) + 1;
-    }
-  });
-
-  // Avós e testemunhas precisam de detalhe — vêm do campo notas/detalhe
-  // Calculamos a partir dos dados disponíveis no card
-
-  return facetas;
-}
-
-function renderFacetas(resultados) {
-  const facetas = calcularFacetas(resultados);
-
-  const anos = resultados.map(r => r.ano).filter(Boolean);
-  anoMinGlobal = anos.length ? Math.min(...anos) : 1500;
-  anoMaxGlobal = anos.length ? Math.max(...anos) : 2100;
-  if (anoMinActivo === 1500) anoMinActivo = anoMinGlobal;
-  if (anoMaxActivo === 2100) anoMaxActivo = anoMaxGlobal;
-
-  const tipoLabels = { batismo: 'Batismo', casamento: 'Casamento', obito: 'Óbito' };
-
-  const grupos = [
-    {
-      id: 'tipo', titulo: 'Tipo de registo',
-      items: Object.entries(facetas.tipo)
-        .sort((a,b) => b[1]-a[1])
-        .map(([k,v]) => ({ valor: k, label: tipoLabels[k] || k, count: v }))
-    },
-    {
-      id: 'local', titulo: 'Localidade',
-      items: Object.entries(facetas.local)
-        .sort((a,b) => b[1]-a[1]).slice(0,15)
-        .map(([k,v]) => ({ valor: k, label: k, count: v }))
-    },
-    {
-      id: 'pai', titulo: 'Pai',
-      items: Object.entries(facetas.pai)
-        .sort((a,b) => b[1]-a[1]).slice(0,10)
-        .map(([k,v]) => ({ valor: k, label: k, count: v }))
-    },
-    {
-      id: 'mae', titulo: 'Mãe',
-      items: Object.entries(facetas.mae)
-        .sort((a,b) => b[1]-a[1]).slice(0,10)
-        .map(([k,v]) => ({ valor: k, label: k, count: v }))
-    },
-  ];
-
-  const html = `
-    <!-- Slider de anos -->
-    <div class="faceta-grupo">
-      <div class="faceta-titulo" onclick="toggleFaceta('anos')">
-        Período
-        <span class="faceta-titulo-seta" id="seta-anos">▾</span>
-      </div>
-      <div class="faceta-lista" id="lista-anos">
-        <div class="faceta-slider">
-          <div class="faceta-slider-vals">
-            <span id="sliderMinVal">${anoMinActivo}</span>
-            <span id="sliderMaxVal">${anoMaxActivo}</span>
-          </div>
-          <input type="range" id="sliderMin"
-            min="${anoMinGlobal}" max="${anoMaxGlobal}" value="${anoMinActivo}"
-            oninput="actualizarSlider('min', this.value)">
-          <input type="range" id="sliderMax"
-            min="${anoMinGlobal}" max="${anoMaxGlobal}" value="${anoMaxActivo}"
-            oninput="actualizarSlider('max', this.value)">
-        </div>
-      </div>
-    </div>
-
-    ${grupos.map(g => g.items.length === 0 ? '' : `
-      <div class="faceta-grupo">
-        <div class="faceta-titulo" onclick="toggleFaceta('${g.id}')">
-          ${g.titulo}
-          <span class="faceta-titulo-seta" id="seta-${g.id}">▾</span>
-        </div>
-        <div class="faceta-lista" id="lista-${g.id}">
-          ${g.items.map(item => {
-            const activo = (facetasActivas[g.id] || new Set()).has(item.valor);
-            return `
-              <label class="faceta-item ${activo ? 'activo' : ''}">
-                <input type="checkbox" ${activo ? 'checked' : ''}
-                  onchange="toggleFiltro('${g.id}', '${item.valor.replace(/'/g,"\\'")}')">
-                <span class="faceta-item-label" title="${item.label}">${item.label}</span>
-                <span class="faceta-item-count">${item.count}</span>
-              </label>
-            `;
-          }).join('')}
-        </div>
-      </div>
-    `).join('')}
-  `;
-
-  document.getElementById('facetasConteudo').innerHTML = html;
-  document.getElementById('facetasDrawer').innerHTML = html;
-}
-
-function toggleFaceta(id) {
-  const lista = document.getElementById(`lista-${id}`);
-  const seta  = document.getElementById(`seta-${id}`);
-  if (!lista) return;
-  lista.classList.toggle('fechada');
-  if (seta) seta.classList.toggle('fechado');
-  // Sincronizar drawer
-  const listaD = document.querySelector(`#facetasDrawer #lista-${id}`);
-  const setaD  = document.querySelector(`#facetasDrawer #seta-${id}`);
-  if (listaD) listaD.classList.toggle('fechada');
-  if (setaD) setaD.classList.toggle('fechado');
-}
-
-function toggleFiltro(grupo, valor) {
-  if (!facetasActivas[grupo]) facetasActivas[grupo] = new Set();
-  const s = facetasActivas[grupo];
-  if (s.has(valor)) s.delete(valor); else s.add(valor);
-  if (s.size === 0) delete facetasActivas[grupo];
-  paginaAtual = 1;  // ← repor à página 1
-  aplicarFacetas();
-}
-
-function actualizarSlider(tipo, val) {
-  val = parseInt(val);
-  if (tipo === 'min') anoMinActivo = Math.min(val, anoMaxActivo);
-  else anoMaxActivo = Math.max(val, anoMinActivo);
-  document.getElementById('sliderMinVal').textContent = anoMinActivo;
-  document.getElementById('sliderMaxVal').textContent = anoMaxActivo;
-  document.getElementById('sliderMin').value = anoMinActivo;
-  document.getElementById('sliderMax').value = anoMaxActivo;
-  paginaAtual = 1;  // ← repor à página 1
-  aplicarFacetas();
-}
-
-function aplicarFacetas() {
-  const temFiltros = Object.keys(facetasActivas).length > 0
-    || anoMinActivo > anoMinGlobal || anoMaxActivo < anoMaxGlobal;
-
-  let filtrados = todosResultados.filter(r => {
-    const ano = r.ano || 0;
-    if (ano && (ano < anoMinActivo || ano > anoMaxActivo)) return false;
-    for (const [grupo, valores] of Object.entries(facetasActivas)) {
-      if (valores.size === 0) continue;
-      let match = false;
-      if (grupo === 'tipo')  match = valores.has(r.tipo);
-      if (grupo === 'local') match = valores.has(r.local);
-      if (grupo === 'pai')   match = valores.has(r.pai);
-      if (grupo === 'mae')   match = valores.has(r.mae);
-      if (!match) return false;
-    }
-    return true;
-  });
-
-  // Badge de filtros activos
-  const nFiltros = Object.values(facetasActivas).reduce((s,v) => s + v.size, 0)
-    + (anoMinActivo > anoMinGlobal || anoMaxActivo < anoMaxGlobal ? 1 : 0);
-  const badge = document.getElementById('badgeFiltros');
-  badge.textContent = nFiltros;
-  badge.style.display = nFiltros > 0 ? 'inline' : 'none';
-
-  // Info resultados
-  const total = filtrados.length;
-  const totalOriginal = todosResultados.length;
-  const inicio = (paginaAtual - 1) * POR_PAGINA + 1;
-  const fim    = Math.min(paginaAtual * POR_PAGINA, total);
-  const info   = document.getElementById('infoResultados');
-  info.style.display = total > 0 ? 'flex' : 'none';
-
-  const textoBase = total === totalOriginal
-    ? `${inicio}–${fim} de ${total.toLocaleString('pt-PT')} registos`
-    : `${inicio}–${fim} de ${total.toLocaleString('pt-PT')} filtrados (${totalOriginal.toLocaleString('pt-PT')} no total)`;
-  document.getElementById('textoResultados').textContent = textoBase;
-  document.getElementById('textoFiltrados').style.display = 'none';
-
-  // Paginar
-  const paginaFiltrados = filtrados.slice(
-    (paginaAtual - 1) * POR_PAGINA,
-    paginaAtual * POR_PAGINA
-  );
-
-  renderCards(paginaFiltrados);
-  renderPaginacaoCliente(total);
-  renderFacetas(todosResultados); // contagens sempre sobre o total
-}
-
-function limparFacetas() {
-  facetasActivas = {};
-  anoMinActivo = anoMinGlobal;
-  anoMaxActivo = anoMaxGlobal;
-  aplicarFacetas();
-}
-
-function renderPaginacaoCliente(total) {
-  const cont    = document.getElementById('paginacao');
-  const nPaginas = Math.ceil(total / POR_PAGINA);
-  if (nPaginas <= 1) { cont.innerHTML = ''; return; }
-
-  const atual = paginaAtual;
-  const paginas = [1];
-  if (atual > 3) paginas.push('...');
-  for (let p = Math.max(2, atual-1); p <= Math.min(nPaginas-1, atual+1); p++)
-    paginas.push(p);
-  if (atual < nPaginas-2) paginas.push('...');
-  if (nPaginas > 1) paginas.push(nPaginas);
-
-  cont.innerHTML = paginas.map(p =>
-    p === '...'
-      ? `<span style="padding:0.35rem 0.3rem;color:var(--cinza)">…</span>`
-      : `<button class="btn-pag ${p===atual?'ativo':''}"
-           onclick="mudarPagina(${p})">${p}</button>`
-  ).join('');
-}
-
-function mudarPagina(p) {
-  paginaAtual = p;
-  aplicarFacetas();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-// ── Drawer mobile ─────────────────────────────────────────────────────────────
-
-function abrirDrawer() {
-  document.getElementById('drawerOverlay').classList.add('aberto');
-  document.getElementById('drawer').classList.add('aberto');
-  document.body.style.overflow = 'hidden';
-}
-
-function fecharDrawer() {
-  document.getElementById('drawerOverlay').classList.remove('aberto');
-  document.getElementById('drawer').classList.remove('aberto');
-  document.body.style.overflow = '';
-}
-
-function toggleFacetaGrupo(id) {
-  toggleFaceta(id);
-}
-  
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 async function init() {
@@ -1331,7 +1015,6 @@ async function init() {
   document.getElementById('campoPesquisa').addEventListener('keydown', e => {
     if (e.key === 'Enter') pesquisar(1);
   });
-
   window.addEventListener('resize', () => {
     const painel = document.getElementById('painelFacetas');
     const layout = document.getElementById('layoutResultados');
@@ -1349,11 +1032,8 @@ async function init() {
 
 async function verificarAcessoIA() {
   try {
-    // Tenta um pedido mínimo ao endpoint IA — se der 403 é externo
-    const r = await fetch(`${API}/api/pesquisar-ia?q=teste`, { method: 'GET' });
-    if (r.status === 403) {
-      document.getElementById('btnIA').style.display = 'none';
-    }
+    const r = await fetch(`${API}/api/pesquisar-ia?q=teste`);
+    if (r.status === 403) document.getElementById('btnIA').style.display = 'none';
   } catch(e) {
     document.getElementById('btnIA').style.display = 'none';
   }
@@ -1383,11 +1063,11 @@ async function carregarFontes() {
   } catch(e) {}
 }
 
-// ── Navegação entre vistas ────────────────────────────────────────────────────
+// ── Navegação ─────────────────────────────────────────────────────────────────
 
 function mostrarVista(vista) {
-  document.getElementById('vistaPesquisa').style.display      = vista === 'pesquisa' ? '' : 'none';
-  document.getElementById('vistaEstatisticas').style.display  = vista === 'estatisticas' ? '' : 'none';
+  document.getElementById('vistaPesquisa').style.display     = vista === 'pesquisa' ? '' : 'none';
+  document.getElementById('vistaEstatisticas').style.display = vista === 'estatisticas' ? '' : 'none';
   document.querySelectorAll('.btn-nav').forEach((b, i) => {
     b.classList.toggle('ativo', (i === 0) === (vista === 'pesquisa'));
   });
@@ -1400,7 +1080,7 @@ function filtrarTipo(tipo) {
   pesquisar(1);
 }
 
-// ── Gráficos de estatísticas ──────────────────────────────────────────────────
+// ── Estatísticas ──────────────────────────────────────────────────────────────
 
 async function carregarGraficos() {
   const cont = document.getElementById('conteudoEstatisticas');
@@ -1409,163 +1089,110 @@ async function carregarGraficos() {
       fetch(`${API}/api/estatisticas-freguesias`),
       fetch(`${API}/api/estatisticas-detalhadas`),
     ]);
-    console.log('freguesias status:', rFreg.status);
-    console.log('detalhadas status:', rDet.status);
     const freguesias = await rFreg.json();
     const detalhadas = await rDet.json();
-    console.log('freguesias:', JSON.stringify(freguesias));
     renderEstatisticas(freguesias, detalhadas);
   } catch(e) {
-    console.error('Erro estatísticas:', e);
-    cont.innerHTML = '<div class="estado"><p>Erro ao carregar estatísticas: ' + e.message + '</p></div>';
+    cont.innerHTML = '<div class="estado"><p>Erro ao carregar estatísticas.</p></div>';
   }
 }
 
 function renderEstatisticas(freguesias, detalhadas) {
   const cont = document.getElementById('conteudoEstatisticas');
-
-  // Totais globais
   const totalB = dadosEstatisticas?.batismos?.total || 0;
   const totalC = dadosEstatisticas?.casamentos?.total || 0;
   const totalO = dadosEstatisticas?.obitos?.total || 0;
   const totalGeral = totalB + totalC + totalO;
 
-  let html = `
-    <!-- Resumo global -->
+  cont.innerHTML = `
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem" class="stats-resumo-global">
       ${[
         { label: 'Total de registos', valor: totalGeral, cor: 'var(--azul-escuro)' },
-        { label: 'Batismos', valor: totalB, cor: 'var(--batismo)' },
+        { label: 'Batismos',   valor: totalB, cor: 'var(--batismo)' },
         { label: 'Casamentos', valor: totalC, cor: 'var(--casamento)' },
-        { label: 'Óbitos', valor: totalO, cor: 'var(--obito)' },
+        { label: 'Óbitos',     valor: totalO, cor: 'var(--obito)' },
       ].map(s => `
         <div class="stats-card" style="text-align:center;padding:1rem">
-          <div style="font-size:1.6rem;font-weight:700;color:${s.cor}">
-            ${s.valor.toLocaleString('pt-PT')}
-          </div>
-          <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.07em;
-                      color:var(--texto-sub);margin-top:0.3rem">${s.label}</div>
+          <div style="font-size:1.6rem;font-weight:700;color:${s.cor}">${s.valor.toLocaleString('pt-PT')}</div>
+          <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--texto-sub);margin-top:0.3rem">${s.label}</div>
         </div>
       `).join('')}
     </div>
 
-    <!-- Por freguesia -->
     ${freguesias.length === 0
       ? '<div class="estado"><p>Sem dados de freguesias disponíveis.</p></div>'
-      : freguesias.map(f => renderFreguesia(f)).join('')
-    }
+      : freguesias.map(f => renderFreguesia(f)).join('')}
 
-    <!-- Gráficos por década -->
     <div style="margin-top:1.5rem">
-      <div style="font-size:0.75rem;font-weight:600;letter-spacing:0.08em;
-                  text-transform:uppercase;color:var(--texto-sub);
-                  margin-bottom:1rem">Distribuição por década</div>
+      <div style="font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--texto-sub);margin-bottom:1rem">Distribuição por década</div>
       <div class="stats-grid">
         <div class="stats-card">
-          <div class="stats-card-titulo">
-            <span class="stat-dot" style="background:var(--batismo)"></span>Batismos
-          </div>
+          <div class="stats-card-titulo"><span class="stat-dot" style="background:var(--batismo)"></span>Batismos</div>
           <div class="grafico-barras" id="grafBatismos"></div>
         </div>
         <div class="stats-card">
-          <div class="stats-card-titulo">
-            <span class="stat-dot" style="background:var(--casamento)"></span>Casamentos
-          </div>
+          <div class="stats-card-titulo"><span class="stat-dot" style="background:var(--casamento)"></span>Casamentos</div>
           <div class="grafico-barras" id="grafCasamentos"></div>
         </div>
         <div class="stats-card">
-          <div class="stats-card-titulo">
-            <span class="stat-dot" style="background:var(--obito)"></span>Óbitos
-          </div>
+          <div class="stats-card-titulo"><span class="stat-dot" style="background:var(--obito)"></span>Óbitos</div>
           <div class="grafico-barras" id="grafObitos"></div>
         </div>
       </div>
     </div>
   `;
 
-  cont.innerHTML = html;
-
-  // Renderizar gráficos de décadas
-  renderGrafico('grafBatismos', detalhadas.batismos_por_decada, 'barra-batismo');
+  renderGrafico('grafBatismos',   detalhadas.batismos_por_decada,   'barra-batismo');
   renderGrafico('grafCasamentos', detalhadas.casamentos_por_decada, 'barra-casamento');
-  renderGrafico('grafObitos', detalhadas.obitos_por_decada, 'barra-obito');
+  renderGrafico('grafObitos',     detalhadas.obitos_por_decada,     'barra-obito');
 }
 
 function renderFreguesia(f) {
   const tipos = {
-    batismos:   { label: 'Batismos',   cor: 'var(--batismo)',   dot: '#7ab0d8' },
-    casamentos: { label: 'Casamentos', cor: 'var(--casamento)', dot: '#b07ad8' },
-    obitos:     { label: 'Óbitos',     cor: 'var(--obito)',     dot: '#d87a6a' },
+    batismos:   { label: 'Batismos',   cor: 'var(--batismo)' },
+    casamentos: { label: 'Casamentos', cor: 'var(--casamento)' },
+    obitos:     { label: 'Óbitos',     cor: 'var(--obito)' },
   };
-
   const resumoTipos = Object.entries(tipos).map(([key, cfg]) => {
     const d = f.tipos[key];
     if (!d) return '';
     return `
       <div style="display:flex;flex-direction:column;gap:0.15rem">
-        <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.07em;
-                    text-transform:uppercase;color:${cfg.cor}">${cfg.label}</div>
-        <div style="font-size:1.1rem;font-weight:700;color:var(--texto)">
-          ${d.total.toLocaleString('pt-PT')}
-        </div>
-        <div style="font-size:0.72rem;color:var(--texto-sub)">
-          ${d.ano_min} – ${d.ano_max}
-        </div>
-      </div>
-    `;
+        <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:${cfg.cor}">${cfg.label}</div>
+        <div style="font-size:1.1rem;font-weight:700;color:var(--texto)">${d.total.toLocaleString('pt-PT')}</div>
+        <div style="font-size:0.72rem;color:var(--texto-sub)">${d.ano_min} – ${d.ano_max}</div>
+      </div>`;
   }).join('');
 
   const uploadsHtml = f.uploads.map(u => {
     const tipoLabel = { batismo:'Batismos', casamento:'Casamentos', obito:'Óbitos' }[u.tipo] || u.tipo;
-    const dataHora = u.data_upload?.substring(0,16).replace('T',' ') || '—';
-    const periodo = u.ano_min && u.ano_max
-      ? `${u.ano_min} – ${u.ano_max}`
-      : u.ano_min || u.ano_max || '—';
+    const dataHora  = u.data_upload?.substring(0,16).replace('T',' ') || '—';
+    const periodo   = u.ano_min && u.ano_max ? `${u.ano_min} – ${u.ano_max}` : u.ano_min || u.ano_max || '—';
     return `
-      <div style="display:grid;grid-template-columns:130px auto 1fr auto;
-                  gap:0.5rem;align-items:center;padding:0.5rem 0;
-                  border-bottom:1px solid var(--linha);font-size:0.78rem">
+      <div style="display:grid;grid-template-columns:130px auto 1fr auto;gap:0.5rem;align-items:center;padding:0.5rem 0;border-bottom:1px solid var(--linha);font-size:0.78rem">
         <span style="color:var(--texto-sub)">${dataHora}</span>
         <span class="badge badge-${u.tipo}" style="font-size:0.6rem">${tipoLabel}</span>
         <span style="color:var(--texto-sub);font-size:0.72rem">${periodo}</span>
         <span style="font-weight:600;text-align:right">${u.registos.toLocaleString('pt-PT')} reg.</span>
-      </div>
-    `;
+      </div>`;
   }).join('');
 
   return `
     <div class="stats-card" style="margin-bottom:1rem">
-      <!-- Cabeçalho da freguesia -->
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;
-                  margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1px solid var(--linha)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1px solid var(--linha)">
         <div>
           <div style="font-size:1rem;font-weight:600;color:var(--texto)">${f.nome}</div>
-          ${f.codigo_adist
-            ? `<div style="font-size:0.72rem;color:var(--texto-sub);margin-top:0.2rem;
-                           font-family:monospace">${f.codigo_adist}</div>`
-            : ''}
+          ${f.codigo_adist ? `<div style="font-size:0.72rem;color:var(--texto-sub);margin-top:0.2rem;font-family:monospace">${f.codigo_adist}</div>` : ''}
         </div>
-        <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.08em;
-                    text-transform:uppercase;color:var(--texto-sub)">
+        <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--texto-sub)">
           ${f.uploads.length} ${f.uploads.length !== 1 ? 'importações' : 'importação'}
         </div>
       </div>
-
-      <!-- Totais por tipo -->
-      <div style="display:flex;gap:2rem;margin-bottom:1rem;flex-wrap:wrap">
-        ${resumoTipos}
-      </div>
-
-      <!-- Histórico de uploads -->
+      <div style="display:flex;gap:2rem;margin-bottom:1rem;flex-wrap:wrap">${resumoTipos}</div>
       ${f.uploads.length > 0 ? `
-        <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.08em;
-                    text-transform:uppercase;color:var(--texto-sub);margin-bottom:0.4rem">
-          Histórico de importações
-        </div>
-        ${uploadsHtml}
-      ` : ''}
-    </div>
-  `;
+        <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--texto-sub);margin-bottom:0.4rem">Histórico de importações</div>
+        ${uploadsHtml}` : ''}
+    </div>`;
 }
 
 function renderGrafico(containerId, dados, classeBarrra) {
@@ -1582,11 +1209,10 @@ function renderGrafico(containerId, dados, classeBarrra) {
         <div class="barra-fill ${classeBarrra}" style="width:${max ? (d.total/max*100) : 0}%"></div>
       </div>
       <div class="barra-valor">${d.total.toLocaleString('pt-PT')}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-// ── Pesquisa normal ───────────────────────────────────────────────────────────
+// ── Pesquisa ──────────────────────────────────────────────────────────────────
 
 async function pesquisar(pagina) {
   paginaAtual = pagina || 1;
@@ -1597,13 +1223,12 @@ async function pesquisar(pagina) {
   const anoMax = document.getElementById('filtrAnoMax').value;
   const fonte  = document.getElementById('filtrFonte').value;
 
-  // Trazer todos os resultados de uma vez
   const params = new URLSearchParams({ pagina: 1, por_pagina: 5000 });
-  if (q) params.set('q', q);
-  if (tipo) params.set('tipo', tipo);
+  if (q)      params.set('q', q);
+  if (tipo)   params.set('tipo', tipo);
   if (anoMin) params.set('ano_min', anoMin);
   if (anoMax) params.set('ano_max', anoMax);
-  if (fonte) params.set('fonte', fonte);
+  if (fonte)  params.set('fonte', fonte);
 
   mostrarCarregando();
   try {
@@ -1620,15 +1245,12 @@ async function pesquisar(pagina) {
   }
 }
 
-// ── Pesquisa IA ───────────────────────────────────────────────────────────────
-
 async function pesquisarIA(pagina) {
   const q = document.getElementById('campoPesquisa').value.trim();
   if (!q) { document.getElementById('campoPesquisa').focus(); return; }
   paginaAtual = 1;
   mostrarCarregando();
   esconderInterpretacao();
-
   try {
     const params = new URLSearchParams({ q, pagina: 1, por_pagina: 5000 });
     const r = await fetch(`${API}/api/pesquisar-ia?${params}`);
@@ -1660,11 +1282,9 @@ function mostrarInterpretacao(filtros, usouIA) {
   const chips = Object.entries(filtros)
     .map(([k,v]) => `<span class="ia-chip"><span>${etiquetas[k]||k}:</span>${v}</span>`)
     .join('');
-
   const modo = usouIA
     ? '<span style="color:var(--laranja);font-weight:600">✦ IA</span> interpretou:'
     : '<span style="color:var(--texto-sub)">Padrões</span> interpretaram:';
-
   const el = document.getElementById('iaInterpretacao');
   el.innerHTML = `${modo} ${chips}`;
   if (!usouIA) el.innerHTML += `<span class="ia-fallback">(API IA indisponível)</span>`;
@@ -1677,26 +1297,7 @@ function esconderInterpretacao() {
   el.innerHTML = '';
 }
 
-// ── Ajuda ──-------------───────────────────────────────────────────────────────
-function abrirAjuda() {
-  document.getElementById('overlayAjuda').classList.add('aberto');
-  document.body.style.overflow = 'hidden';
-}
-
-function fecharAjuda(e) {
-  if (e && e.target !== document.getElementById('overlayAjuda')) return;
-  document.getElementById('overlayAjuda').classList.remove('aberto');
-  document.body.style.overflow = '';
-}
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    fecharModal({ target: document.getElementById('overlay') });
-    fecharAjuda({ target: document.getElementById('overlayAjuda') });
-  }
-});
-  
-// ── Render resultados ─────────────────────────────────────────────────────────
+// ── Render ────────────────────────────────────────────────────────────────────
 
 function mostrarCarregando() {
   document.getElementById('infoResultados').style.display = 'none';
@@ -1704,8 +1305,6 @@ function mostrarCarregando() {
     `<div class="estado"><p>A pesquisar…</p></div>`;
   document.getElementById('paginacao').innerHTML = '';
 }
-
-const POR_PAGINA = 25;
 
 function renderResultados(d, q) {
   const info      = document.getElementById('infoResultados');
@@ -1725,9 +1324,7 @@ function renderResultados(d, q) {
     return;
   }
 
-  // Mostrar painel de facetas
   if (d.total > 1) {
-    // Só mostrar painel lateral em desktop
     if (window.innerWidth > 640) {
       painel.style.display = 'block';
       layout.classList.remove('sem-facetas');
@@ -1750,7 +1347,6 @@ function renderCards(resultados) {
       <p>Nenhum resultado com os filtros seleccionados.</p></div>`;
     return;
   }
-
   const q = document.getElementById('campoPesquisa').value.trim();
   lista.innerHTML = '';
   resultados.forEach(reg => {
@@ -1759,20 +1355,17 @@ function renderCards(resultados) {
     card.dataset.tipo = reg.tipo;
     const tipoLabel = { batismo:'Batismo', casamento:'Casamento', obito:'Óbito' }[reg.tipo];
     const detalhes  = [];
-    if (reg.data)  detalhes.push(reg.data);
+    if (reg.data) detalhes.push(reg.data);
     if (reg.local && reg.local !== 'n/d') detalhes.push(reg.local);
-    if (reg.pai && reg.pai !== 'n/d' || reg.mae && reg.mae !== 'n/d') {
-      const pais = [reg.pai, reg.mae].filter(p => p && p !== 'n/d').join(' & ');
-      if (pais) detalhes.push(`Fil. ${pais}`);
-    }
+    const pais = [reg.pai, reg.mae].filter(p => p && p !== 'n/d').join(' & ');
+    if (pais) detalhes.push(`Fil. ${pais}`);
     card.innerHTML = `
       <span class="badge badge-${reg.tipo}">${tipoLabel}</span>
       <div>
         <div class="card-nome">${destacar(reg.nome || '—', q)}</div>
         <div class="card-detalhe">${detalhes.join(' · ')}</div>
       </div>
-      <div class="card-ano">${reg.ano || '—'}</div>
-    `;
+      <div class="card-ano">${reg.ano || '—'}</div>`;
     card.addEventListener('click', () => abrirDetalhe(reg.tipo, reg.id));
     lista.appendChild(card);
   });
@@ -1785,23 +1378,184 @@ function destacar(texto, q) {
     '<mark style="background:#fde8a0;padding:0 1px;border-radius:2px">$1</mark>');
 }
 
-// ── Paginação ─────────────────────────────────────────────────────────────────
+// ── Facetas ───────────────────────────────────────────────────────────────────
 
-function renderPaginacao(d) {
-  const cont = document.getElementById('paginacao');
-  if (d.paginas <= 1) { cont.innerHTML = ''; return; }
-  const atual = d.pagina, total = d.paginas;
+function calcularFacetas(resultados) {
+  const facetas = { tipo:{}, local:{}, pai:{}, mae:{} };
+  resultados.forEach(r => {
+    facetas.tipo[r.tipo] = (facetas.tipo[r.tipo] || 0) + 1;
+    if (r.local && r.local !== 'n/d') facetas.local[r.local] = (facetas.local[r.local] || 0) + 1;
+    if (r.pai   && r.pai   !== 'n/d') facetas.pai[r.pai]     = (facetas.pai[r.pai]     || 0) + 1;
+    if (r.mae   && r.mae   !== 'n/d') facetas.mae[r.mae]     = (facetas.mae[r.mae]     || 0) + 1;
+  });
+  return facetas;
+}
+
+function renderFacetas(resultados) {
+  const facetas = calcularFacetas(resultados);
+  const anos = resultados.map(r => r.ano).filter(Boolean);
+  anoMinGlobal = anos.length ? Math.min(...anos) : 1500;
+  anoMaxGlobal = anos.length ? Math.max(...anos) : 2100;
+  if (anoMinActivo === 1500) anoMinActivo = anoMinGlobal;
+  if (anoMaxActivo === 2100) anoMaxActivo = anoMaxGlobal;
+
+  const tipoLabels = { batismo:'Batismo', casamento:'Casamento', obito:'Óbito' };
+  const grupos = [
+    { id:'tipo',  titulo:'Tipo de registo', items: Object.entries(facetas.tipo).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({valor:k, label:tipoLabels[k]||k, count:v})) },
+    { id:'local', titulo:'Localidade',      items: Object.entries(facetas.local).sort((a,b)=>b[1]-a[1]).slice(0,15).map(([k,v])=>({valor:k, label:k, count:v})) },
+    { id:'pai',   titulo:'Pai',             items: Object.entries(facetas.pai).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([k,v])=>({valor:k, label:k, count:v})) },
+    { id:'mae',   titulo:'Mãe',             items: Object.entries(facetas.mae).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([k,v])=>({valor:k, label:k, count:v})) },
+  ];
+
+  const html = `
+    <div class="faceta-grupo">
+      <div class="faceta-titulo" onclick="toggleFaceta('anos')">
+        Período <span class="faceta-titulo-seta" id="seta-anos">▾</span>
+      </div>
+      <div class="faceta-lista" id="lista-anos">
+        <div class="faceta-slider">
+          <div class="faceta-slider-vals">
+            <span id="sliderMinVal">${anoMinActivo}</span>
+            <span id="sliderMaxVal">${anoMaxActivo}</span>
+          </div>
+          <input type="range" id="sliderMin" min="${anoMinGlobal}" max="${anoMaxGlobal}" value="${anoMinActivo}" oninput="actualizarSlider('min',this.value)">
+          <input type="range" id="sliderMax" min="${anoMinGlobal}" max="${anoMaxGlobal}" value="${anoMaxActivo}" oninput="actualizarSlider('max',this.value)">
+        </div>
+      </div>
+    </div>
+    ${grupos.map(g => g.items.length === 0 ? '' : `
+      <div class="faceta-grupo">
+        <div class="faceta-titulo" onclick="toggleFaceta('${g.id}')">
+          ${g.titulo} <span class="faceta-titulo-seta" id="seta-${g.id}">▾</span>
+        </div>
+        <div class="faceta-lista" id="lista-${g.id}">
+          ${g.items.map(item => {
+            const activo = (facetasActivas[g.id] || new Set()).has(item.valor);
+            return `<label class="faceta-item ${activo?'activo':''}">
+              <input type="checkbox" ${activo?'checked':''} onchange="toggleFiltro('${g.id}','${item.valor.replace(/'/g,"\\'")}')">
+              <span class="faceta-item-label" title="${item.label}">${item.label}</span>
+              <span class="faceta-item-count">${item.count}</span>
+            </label>`;
+          }).join('')}
+        </div>
+      </div>`).join('')}`;
+
+  document.getElementById('facetasConteudo').innerHTML = html;
+  document.getElementById('facetasDrawer').innerHTML   = html;
+}
+
+function toggleFaceta(id) {
+  ['', 'Drawer'].forEach(suffix => {
+    const cont = suffix ? document.getElementById('facetasDrawer') : null;
+    const lista = cont ? cont.querySelector(`#lista-${id}`) : document.getElementById(`lista-${id}`);
+    const seta  = cont ? cont.querySelector(`#seta-${id}`)  : document.getElementById(`seta-${id}`);
+    if (lista) lista.classList.toggle('fechada');
+    if (seta)  seta.classList.toggle('fechado');
+  });
+}
+
+function toggleFiltro(grupo, valor) {
+  if (!facetasActivas[grupo]) facetasActivas[grupo] = new Set();
+  const s = facetasActivas[grupo];
+  if (s.has(valor)) s.delete(valor); else s.add(valor);
+  if (s.size === 0) delete facetasActivas[grupo];
+  paginaAtual = 1;
+  aplicarFacetas();
+}
+
+function actualizarSlider(tipo, val) {
+  val = parseInt(val);
+  if (tipo === 'min') anoMinActivo = Math.min(val, anoMaxActivo);
+  else                anoMaxActivo = Math.max(val, anoMinActivo);
+  document.getElementById('sliderMinVal').textContent = anoMinActivo;
+  document.getElementById('sliderMaxVal').textContent = anoMaxActivo;
+  document.getElementById('sliderMin').value = anoMinActivo;
+  document.getElementById('sliderMax').value = anoMaxActivo;
+  paginaAtual = 1;
+  aplicarFacetas();
+}
+
+function aplicarFacetas() {
+  let filtrados = todosResultados.filter(r => {
+    const ano = r.ano || 0;
+    if (ano && (ano < anoMinActivo || ano > anoMaxActivo)) return false;
+    for (const [grupo, valores] of Object.entries(facetasActivas)) {
+      if (valores.size === 0) continue;
+      let match = false;
+      if (grupo === 'tipo')  match = valores.has(r.tipo);
+      if (grupo === 'local') match = valores.has(r.local);
+      if (grupo === 'pai')   match = valores.has(r.pai);
+      if (grupo === 'mae')   match = valores.has(r.mae);
+      if (!match) return false;
+    }
+    return true;
+  });
+
+  const nFiltros = Object.values(facetasActivas).reduce((s,v) => s + v.size, 0)
+    + (anoMinActivo > anoMinGlobal || anoMaxActivo < anoMaxGlobal ? 1 : 0);
+  const badge = document.getElementById('badgeFiltros');
+  badge.textContent    = nFiltros;
+  badge.style.display  = nFiltros > 0 ? 'inline' : 'none';
+
+  const total   = filtrados.length;
+  const totalOr = todosResultados.length;
+  const inicio  = (paginaAtual - 1) * POR_PAGINA + 1;
+  const fim     = Math.min(paginaAtual * POR_PAGINA, total);
+  const info    = document.getElementById('infoResultados');
+  info.style.display = total > 0 ? 'flex' : 'none';
+  document.getElementById('textoResultados').textContent = total === totalOr
+    ? `${inicio}–${fim} de ${total.toLocaleString('pt-PT')} registos`
+    : `${inicio}–${fim} de ${total.toLocaleString('pt-PT')} filtrados (${totalOr.toLocaleString('pt-PT')} no total)`;
+  document.getElementById('textoFiltrados').style.display = 'none';
+
+  renderCards(filtrados.slice((paginaAtual-1)*POR_PAGINA, paginaAtual*POR_PAGINA));
+  renderPaginacaoCliente(total);
+  renderFacetas(todosResultados);
+}
+
+function limparFacetas() {
+  facetasActivas = {};
+  anoMinActivo   = anoMinGlobal;
+  anoMaxActivo   = anoMaxGlobal;
+  paginaAtual    = 1;
+  aplicarFacetas();
+}
+
+function renderPaginacaoCliente(total) {
+  const cont     = document.getElementById('paginacao');
+  const nPaginas = Math.ceil(total / POR_PAGINA);
+  if (nPaginas <= 1) { cont.innerHTML = ''; return; }
+  const atual   = paginaAtual;
   const paginas = [1];
   if (atual > 3) paginas.push('...');
-  for (let p = Math.max(2, atual-1); p <= Math.min(total-1, atual+1); p++) paginas.push(p);
-  if (atual < total-2) paginas.push('...');
-  if (total > 1) paginas.push(total);
-
+  for (let p = Math.max(2, atual-1); p <= Math.min(nPaginas-1, atual+1); p++) paginas.push(p);
+  if (atual < nPaginas-2) paginas.push('...');
+  if (nPaginas > 1) paginas.push(nPaginas);
   cont.innerHTML = paginas.map(p =>
     p === '...'
       ? `<span style="padding:0.35rem 0.3rem;color:var(--cinza)">…</span>`
-      : `<button class="btn-pag ${p===atual?'ativo':''}" onclick="pesquisar(${p})">${p}</button>`
+      : `<button class="btn-pag ${p===atual?'ativo':''}" onclick="mudarPagina(${p})">${p}</button>`
   ).join('');
+}
+
+function mudarPagina(p) {
+  paginaAtual = p;
+  aplicarFacetas();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Drawer mobile ─────────────────────────────────────────────────────────────
+
+function abrirDrawer() {
+  document.getElementById('drawerOverlay').classList.add('aberto');
+  document.getElementById('drawer').classList.add('aberto');
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharDrawer() {
+  document.getElementById('drawerOverlay').classList.remove('aberto');
+  document.getElementById('drawer').classList.remove('aberto');
+  document.body.style.overflow = '';
 }
 
 // ── Modal de detalhe ──────────────────────────────────────────────────────────
@@ -1821,44 +1575,44 @@ const SECOES = {
     { titulo: 'Notas', campos: [{c:'notas',l:'Notas',largo:true}] },
   ],
   casamento: [
-      { titulo: 'Identificação', campos: [
-        {c:'data',l:'Data'},{c:'residencia',l:'Residência'},
-        {c:'ano',l:'Ano'},{c:'nr_ordem',l:'Nº de ordem'},
-        {c:'fls',l:'Fólios'},{c:'fonte',l:'Fonte',largo:true},
-      ]},
-      { titulo: 'Noivo', campos: [
-        {c:'noivo',l:'Nome'},{c:'idade_dnasc_noivo',l:'Idade / D. Nasc.'},
-        {c:'nat_noivo',l:'Naturalidade'},
-        {c:'pai_noivo',l:'Pai'},{c:'nat_pai_noivo',l:'Nat. pai'},
-        {c:'mae_noivo',l:'Mãe'},{c:'nat_mae_noivo',l:'Nat. mãe'},
-        {c:'avo_paterno_noivo',l:'Avô paterno'},{c:'avo_paterna_noivo',l:'Avó paterna'},
-        {c:'avo_materno_noivo',l:'Avô materno'},{c:'avo_materna_noivo',l:'Avó materna'},
-      ]},
-      { titulo: 'Noiva', campos: [
-        {c:'noiva',l:'Nome'},{c:'idade_dnasc_noiva',l:'Idade / D. Nasc.'},
-        {c:'nat_noiva',l:'Naturalidade'},
-        {c:'pai_noiva',l:'Pai'},{c:'nat_pai_noiva',l:'Nat. pai'},
-        {c:'mae_noiva',l:'Mãe'},{c:'nat_mae_noiva',l:'Nat. mãe'},
-        {c:'avo_paterno_noiva',l:'Avô paterno'},{c:'avo_paterna_noiva',l:'Avó paterna'},
-        {c:'avo_materno_noiva',l:'Avô materno'},{c:'avo_materna_noiva',l:'Avó materna'},
-      ]},
-      { titulo: 'Testemunhas & Notas', campos: [
-        {c:'testemunha1',l:'Testemunha 1'},{c:'testemunha2',l:'Testemunha 2'},
-        {c:'notas',l:'Notas',largo:true},
-      ]},
+    { titulo: 'Identificação', campos: [
+      {c:'data',l:'Data'},{c:'residencia',l:'Residência'},
+      {c:'ano',l:'Ano'},{c:'nr_ordem',l:'Nº de ordem'},
+      {c:'fls',l:'Fólios'},{c:'fonte',l:'Fonte',largo:true},
+    ]},
+    { titulo: 'Noivo', campos: [
+      {c:'noivo',l:'Nome'},{c:'idade_dnasc_noivo',l:'Idade / D. Nasc.'},
+      {c:'nat_noivo',l:'Naturalidade'},
+      {c:'pai_noivo',l:'Pai'},{c:'nat_pai_noivo',l:'Nat. pai'},
+      {c:'mae_noivo',l:'Mãe'},{c:'nat_mae_noivo',l:'Nat. mãe'},
+      {c:'avo_paterno_noivo',l:'Avô paterno'},{c:'avo_paterna_noivo',l:'Avó paterna'},
+      {c:'avo_materno_noivo',l:'Avô materno'},{c:'avo_materna_noivo',l:'Avó materna'},
+    ]},
+    { titulo: 'Noiva', campos: [
+      {c:'noiva',l:'Nome'},{c:'idade_dnasc_noiva',l:'Idade / D. Nasc.'},
+      {c:'nat_noiva',l:'Naturalidade'},
+      {c:'pai_noiva',l:'Pai'},{c:'nat_pai_noiva',l:'Nat. pai'},
+      {c:'mae_noiva',l:'Mãe'},{c:'nat_mae_noiva',l:'Nat. mãe'},
+      {c:'avo_paterno_noiva',l:'Avô paterno'},{c:'avo_paterna_noiva',l:'Avó paterna'},
+      {c:'avo_materno_noiva',l:'Avô materno'},{c:'avo_materna_noiva',l:'Avó materna'},
+    ]},
+    { titulo: 'Testemunhas & Notas', campos: [
+      {c:'testemunha1',l:'Testemunha 1'},{c:'testemunha2',l:'Testemunha 2'},
+      {c:'notas',l:'Notas',largo:true},
+    ]},
   ],
   obito: [
-      { titulo: 'Identificação', campos: [
-        {c:'nome',l:'Nome'},{c:'data_obito',l:'Data de óbito'},
-        {c:'local_falecimento',l:'Local de falecimento'},{c:'idade',l:'Idade'},
-        {c:'ano',l:'Ano'},{c:'nr_ordem',l:'Nº de ordem'},
-        {c:'fls',l:'Fólios'},{c:'fonte',l:'Fonte',largo:true},
-      ]},
-      { titulo: 'Filiação', campos: [
-        {c:'pai',l:'Pai'},{c:'nat_pai',l:'Naturalidade (pai)'},
-        {c:'mae',l:'Mãe'},{c:'nat_mae',l:'Naturalidade (mãe)'},
-      ]},
-      { titulo: 'Notas', campos: [{c:'notas',l:'Notas',largo:true}] },
+    { titulo: 'Identificação', campos: [
+      {c:'nome',l:'Nome'},{c:'data_obito',l:'Data de óbito'},
+      {c:'local_falecimento',l:'Local de falecimento'},{c:'idade',l:'Idade'},
+      {c:'ano',l:'Ano'},{c:'nr_ordem',l:'Nº de ordem'},
+      {c:'fls',l:'Fólios'},{c:'fonte',l:'Fonte',largo:true},
+    ]},
+    { titulo: 'Filiação', campos: [
+      {c:'pai',l:'Pai'},{c:'nat_pai',l:'Naturalidade (pai)'},
+      {c:'mae',l:'Mãe'},{c:'nat_mae',l:'Naturalidade (mãe)'},
+    ]},
+    { titulo: 'Notas', campos: [{c:'notas',l:'Notas',largo:true}] },
   ],
 };
 
@@ -1866,43 +1620,33 @@ async function abrirDetalhe(tipo, id) {
   try {
     const r   = await fetch(`${API}/api/registo/${tipo}/${id}`);
     const reg = await r.json();
-
-    const tipoLabel = { batismo:'Batismo', casamento:'Casamento', obito:'Óbito' }[tipo];
-    const badgeClass = `badge badge-${tipo}`;
+    const tipoLabel  = { batismo:'Batismo', casamento:'Casamento', obito:'Óbito' }[tipo];
     document.getElementById('modalTipoBadge').innerHTML =
-      `<span class="${badgeClass}">${tipoLabel}</span>`;
-
+      `<span class="badge badge-${tipo}">${tipoLabel}</span>`;
     let titulo = tipo === 'casamento'
       ? `${reg.noivo||'—'} & ${reg.noiva||'—'}`
       : (reg.nome || '—');
     if (reg.ano) titulo += ` · ${reg.ano}`;
     document.getElementById('modalTitulo').textContent = titulo;
-
     const corpo = document.getElementById('modalCorpo');
     corpo.innerHTML = '';
-
     (SECOES[tipo] || []).forEach(secao => {
-      const camposComValor = secao.campos.filter(({c}) => reg[c] && reg[c] !== 'n/d');
-      if (camposComValor.length === 0) return;
-
+      const campos = secao.campos.filter(({c}) => reg[c] && reg[c] !== 'n/d');
+      if (campos.length === 0) return;
       const secDiv = document.createElement('div');
       secDiv.className = 'modal-secao';
       secDiv.innerHTML = `<div class="modal-secao-titulo">${secao.titulo}</div>`;
-
       const grid = document.createElement('div');
       grid.className = 'modal-grid';
-
-      camposComValor.forEach(({c, l, largo}) => {
+      campos.forEach(({c, l, largo}) => {
         const div = document.createElement('div');
-        div.className = `modal-campo${largo ? ' largo' : ''}`;
+        div.className = `modal-campo${largo?' largo':''}`;
         div.innerHTML = `<label>${l}</label><span>${reg[c]}</span>`;
         grid.appendChild(div);
       });
-
       secDiv.appendChild(grid);
       corpo.appendChild(secDiv);
     });
-
     document.getElementById('overlay').classList.add('aberto');
     document.body.style.overflow = 'hidden';
   } catch(e) {}
@@ -1914,9 +1658,28 @@ function fecharModal(e) {
   document.body.style.overflow = '';
 }
 
+// ── Ajuda ─────────────────────────────────────────────────────────────────────
+
+function abrirAjuda() {
+  document.getElementById('overlayAjuda').classList.add('aberto');
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharAjuda(e) {
+  if (e && e.target !== document.getElementById('overlayAjuda')) return;
+  document.getElementById('overlayAjuda').classList.remove('aberto');
+  document.body.style.overflow = '';
+}
+
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') fecharModal({ target: document.getElementById('overlay') });
+  if (e.key === 'Escape') {
+    fecharModal({ target: document.getElementById('overlay') });
+    fecharAjuda({ target: document.getElementById('overlayAjuda') });
+    fecharDrawer();
+  }
 });
+
+// ── Utilitários ───────────────────────────────────────────────────────────────
 
 function limparFiltros() {
   ['campoPesquisa','filtrAnoMin','filtrAnoMax'].forEach(id => document.getElementById(id).value = '');
@@ -1925,17 +1688,10 @@ function limparFiltros() {
   document.getElementById('infoResultados').style.display = 'none';
   document.getElementById('paginacao').innerHTML = '';
   esconderInterpretacao();
+  limparFacetas();
 }
 
 init();
 </script>
-<footer>
-  <div class="footer-inner">
-    <p class="footer-principal">
-      A informação disponível nesta plataforma foi recolhida a partir da compilação em Excel dos registos de batismos do Dr. Carlos Alves Bento, da transcrição de registos disponíveis no Arquivo Distrital de Santarém e no Arquivo Nacional Torre do Tombo, bem como de alguns registos paroquiais da paróquia de São Sebastião de Mouriscas. Não nos responsabilizamos por eventuais erros de transcrição.
-    </p>
-    <p class="footer-rodape">Plataforma produzida com auxílio de Inteligência Artificial · 2026</p>
-  </div>
-</footer>
 </body>
 </html>
