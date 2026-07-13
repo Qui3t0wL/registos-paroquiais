@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import re
+import unicodedata
 from typing import Optional, Tuple, List
 from datetime import datetime
 
@@ -11,19 +12,28 @@ def _calcular_relevancia(reg, q):
     if not q:
         return 0
     termos = q.strip().split()
-    padrao_ordenado = ".*".join(re.escape(t) for t in termos)
-    nome = reg.get("nome") or reg.get("_nome_sort") or ""
+    termos_norm = [_normalizar(t) for t in termos]
+    padrao_ordenado = ".*".join(re.escape(t) for t in termos_norm)
+    nome_raw = reg.get("nome") or reg.get("_nome_sort") or ""
+    nome = _normalizar(nome_raw)
+    q_norm = _normalizar(q.strip())
 
     # Frase exacta
-    if q.lower() in nome.lower():
+    if q_norm in nome:
         return 0
     # Tokens pela ordem (com palavras no meio)
     if re.search(padrao_ordenado, nome, re.IGNORECASE):
         return 1
     # Todos os termos presentes em qualquer ordem
-    if all(t.lower() in nome.lower() for t in termos):
+    if all(t in nome for t in termos_norm):
         return 2
     return 3
+
+def _normalizar(texto):
+    """Remove acentos para pesquisa insensível a acentos."""
+    if texto is None:
+        return None
+    return unicodedata.normalize('NFD', texto).encode('ascii', 'ignore').decode('ascii').lower()
     
 class Database:
     def __init__(self):
@@ -35,6 +45,8 @@ class Database:
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA journal_mode=WAL")
         conn.execute("PRAGMA foreign_keys=ON")
+        # Registar função de normalização
+        conn.create_function("NORMALIZAR", 1, _normalizar)
         return conn
 
     def criar_tabelas(self):
@@ -238,35 +250,40 @@ class Database:
 
         if q:
             termos = q.strip().split()
+            # Normalizar os termos de pesquisa
+            termos_norm = [_normalizar(t) for t in termos]
         
             if len(termos) == 1:
                 # Palavra única — pesquisa normal
-                condicoes = " OR ".join([f"{c} LIKE ? COLLATE NOCASE" for c in campos_nome])
+                condicoes = " OR ".join([f"NORMALIZAR({c}) LIKE ?" for c in campos_nome])
                 where.append(f"({condicoes})")
-                params.extend([f"%{termos[0]}%"] * len(campos_nome))
+                params.extend([f"%{termos_norm[0]}%"] * len(campos_nome))
         
             else:
-                # Frase composta — três níveis de correspondência por prioridade:
-                # Nível 1: frase exacta ("José Alves")
-                cond_exacta = " OR ".join([f"{c} LIKE ? COLLATE NOCASE" for c in campos_nome])
-                params_exacta = [f"%{q.strip()}%"] * len(campos_nome)
+                # Frase composta normalizada — três níveis de correspondência por prioridade:
+	            # Nível 1: frase exacta ("José Alves")
+                frase_norm = _normalizar(q.strip())
+                cond_exacta = " OR ".join([f"NORMALIZAR({c}) LIKE ?" for c in campos_nome])
+                params_exacta = [f"%{frase_norm}%"] * len(campos_nome)
         
-                # Nível 2: tokens pela ordem com palavras no meio
-                # "José Alves" → LIKE '%José%Alves%'
-                padrao_ordenado = "%" + "%".join(termos) + "%"
-                cond_ordenada = " OR ".join([f"{c} LIKE ? COLLATE NOCASE" for c in campos_nome])
+                # Nível 2: tokens normalizados pela ordem com palavras no meio
+	            # "José Alves" → LIKE '%José%Alves%'
+                padrao_ordenado = "%" + "%".join(termos_norm) + "%"
+                cond_ordenada = " OR ".join([f"NORMALIZAR({c}) LIKE ?" for c in campos_nome])
                 params_ordenada = [padrao_ordenado] * len(campos_nome)
         
                 # Nível 3: todos os termos presentes em qualquer ordem
-                # "José Alves" → contém "José" E contém "Alves"
+            	# "José Alves" → contém "José" E contém "Alves"
                 conds_termos = []
                 params_termos = []
-                for termo in termos:
-                    cond_termo = " OR ".join([f"{c} LIKE ? COLLATE NOCASE" for c in campos_nome])
+                for termo_norm in termos_norm:
+                    cond_termo = " OR ".join([f"NORMALIZAR({c}) LIKE ?" for c in campos_nome])
                     conds_termos.append(f"({cond_termo})")
-                    params_termos.extend([f"%{termo}%"] * len(campos_nome))
+                    params_termos.extend([f"%{termo_norm}%"] * len(campos_nome))
         
-                where.append(f"(({cond_exacta}) OR ({cond_ordenada}) OR ({' AND '.join(conds_termos)}))")
+                where.append(
+                    f"(({cond_exacta}) OR ({cond_ordenada}) OR ({' AND '.join(conds_termos)}))"
+                )
                 params = params_exacta + params_ordenada + params_termos + params
 
         if ano_min:
