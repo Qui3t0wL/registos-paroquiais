@@ -1331,6 +1331,20 @@ async function init() {
   document.getElementById('campoPesquisa').addEventListener('keydown', e => {
     if (e.key === 'Enter') pesquisar(1);
   });
+
+  window.addEventListener('resize', () => {
+    const painel = document.getElementById('painelFacetas');
+    const layout = document.getElementById('layoutResultados');
+    if (todosResultados.length > 1) {
+      if (window.innerWidth > 640) {
+        painel.style.display = 'block';
+        layout.classList.remove('sem-facetas');
+      } else {
+        painel.style.display = 'none';
+        layout.classList.add('sem-facetas');
+      }
+    }
+  });
 }
 
 async function verificarAcessoIA() {
@@ -1713,8 +1727,14 @@ function renderResultados(d, q) {
 
   // Mostrar painel de facetas
   if (d.total > 1) {
-    painel.style.display = 'block';
-    layout.classList.remove('sem-facetas');
+    // Só mostrar painel lateral em desktop
+    if (window.innerWidth > 640) {
+      painel.style.display = 'block';
+      layout.classList.remove('sem-facetas');
+    } else {
+      painel.style.display = 'none';
+      layout.classList.add('sem-facetas');
+    }
     btnMobile.style.display = 'flex';
     renderFacetas(todosResultados);
   }
