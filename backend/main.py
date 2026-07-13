@@ -68,7 +68,7 @@ def pesquisar(
     ano_max: Optional[int] = None,
     fonte: Optional[str] = Query(None, max_length=100),
     pagina: int = Query(1, ge=1, le=10000),
-    por_pagina: int = Query(25, ge=1, le=100),
+    por_pagina: int = Query(25, ge=1, le=5000),
 ):
     verificar_rate_limit(request, "pesquisa")
     q_limpo     = sanitizar_input(q, "q")
