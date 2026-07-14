@@ -856,7 +856,7 @@
         <div class="filtro-grupo">
           <label>Período</label>
           <div class="filtro-anos">
-            <input type="number" id="filtrAnoMin" placeholder="Desde" min="1500" max="2100">
+            <input type="number" id="filtrAnoMin" placeholder="De" min="1500" max="2100">
             <span>–</span>
             <input type="number" id="filtrAnoMax" placeholder="Até" min="1500" max="2100">
           </div>
@@ -1277,7 +1277,7 @@ function mostrarInterpretacao(filtros, usouIA) {
   const etiquetas = {
     nome:'Nome', pai:'Pai', mae:'Mãe', noivo:'Noivo', noiva:'Noiva',
     testemunha:'Testemunha', local:'Local', tipo:'Tipo',
-    fonte:'Fonte', ano_min:'Desde', ano_max:'Até'
+    fonte:'Fonte', ano_min:'De', ano_max:'Até' /* alterei o 'Desde' para 'De' */
   };
   const chips = Object.entries(filtros)
     .map(([k,v]) => `<span class="ia-chip"><span>${etiquetas[k]||k}:</span>${v}</span>`)
