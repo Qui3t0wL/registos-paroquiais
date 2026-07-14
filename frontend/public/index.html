@@ -1402,10 +1402,10 @@ function renderFacetas(resultados) {
   const tipoLabels = { batismo:'Batismo', casamento:'Casamento', obito:'Óbito' };
   const grupos = [
     { id:'tipo',  titulo:'Tipo de registo', items: Object.entries(facetas.tipo).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({valor:k, label:tipoLabels[k]||k, count:v})) },
-    { id:'local', titulo:'Localidade',      items: Object.entries(facetas.local).sort((a,b)=>b[1]-a[1]).slice(0,15).map(([k,v])=>({valor:k, label:k, count:v})) },
-    { id:'pai',   titulo:'Pai',             items: Object.entries(facetas.pai).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([k,v])=>({valor:k, label:k, count:v})) },
-    { id:'mae',   titulo:'Mãe',             items: Object.entries(facetas.mae).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([k,v])=>({valor:k, label:k, count:v})) },
-  ];
+    { id:'local', titulo:'Localidade',      items: Object.entries(facetas.local).sort((a,b)=>b[1]-a[1]).slice(0,20).map(([k,v])=>({valor:k, label:k, count:v})) },
+    { id:'pai',   titulo:'Pai',             items: Object.entries(facetas.pai).sort((a,b)=>b[1]-a[1]).slice(0,20).map(([k,v])=>({valor:k, label:k, count:v})) },
+    { id:'mae',   titulo:'Mãe',             items: Object.entries(facetas.mae).sort((a,b)=>b[1]-a[1]).slice(0,20).map(([k,v])=>({valor:k, label:k, count:v})) },
+  ]; /*alterei todas as slices para terem 20 resultados. Antes tinham 15,10,10 */
 
   const html = `
     <div class="faceta-grupo">
