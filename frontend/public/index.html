@@ -1256,9 +1256,8 @@ async function pesquisarIA(pagina) {
     const r = await fetch(`${API}/api/pesquisar-ia?${params}`);
     const d = await r.json();
     if (!r.ok) {
-      const msgErro = typeof d.detail === 'string' ? d.detail : JSON.stringify(d.detail);
       document.getElementById('listaResultados').innerHTML =
-        `<div class="estado"><div class="estado-icon">⚠</div><p>${msgErro || 'Erro na pesquisa IA.'}</p></div>`;
+        `<div class="estado"><div class="estado-icon">⚠</div><p>${d.detail || 'Erro na pesquisa IA.'}</p></div>`;
       return;
     }
     todosResultados = d.resultados;
