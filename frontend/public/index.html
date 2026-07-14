@@ -91,6 +91,16 @@
   .btn-nav:hover { background: rgba(255,255,255,0.08); color: var(--branco); }
   .btn-nav.ativo { background: var(--laranja); color: var(--branco); }
 
+  .disclaimer-bar {
+    background: rgba(244,121,74,0.08);
+    border-bottom: 1px solid var(--laranja-soft);
+    color: var(--texto-sub);
+    font-size: 0.72rem;
+    text-align: center;
+    padding: 0.45rem 1.5rem;
+    line-height: 1.4;
+  }
+
   /* ── Stats bar ── */
   .stats-bar {
     background: var(--azul-medio);
@@ -710,6 +720,9 @@
     .logo-sub { display: none; }
     .header-nav .btn-nav { padding: 0.35rem 0.6rem; font-size: 0.72rem; }
 
+    /* Disclaimer topo   */
+    .disclaimer-bar { font-size: 0.68rem; padding: 0.4rem 1rem; }
+
     /* Stats bar */
     .stat { padding: 0.6rem 0.8rem; flex: 1; }
     .stat-valor { font-size: 1.1rem; }
@@ -741,7 +754,7 @@
 
     /* Layout e facetas */
     .layout-resultados { grid-template-columns: 1fr !important; }
-    .painel-facetas { display: none; }
+    .painel-facetas { display: none !important; }
     .btn-filtrar-mobile { display: flex; }
 
     /* Cards */
@@ -809,7 +822,9 @@
     <button class="btn-nav" onclick="mostrarVista('estatisticas')">Estatísticas</button>
   </nav>
 </header>
-
+<div class="disclaimer-bar">
+  ⚠ A informação disponível não dispensa a consulta do registo original para confirmação e obtenção de dados adicionais. Cada registo contém a fonte e o fólio para localização.
+</div>
 <div class="stats-bar">
   <div class="stat" onclick="filtrarTipo('batismo')" title="Ver apenas batismos">
     <div class="stat-valor" id="statBatismos">—</div>
@@ -1410,9 +1425,9 @@ function renderFacetas(resultados) {
   const html = `
     <div class="faceta-grupo">
       <div class="faceta-titulo" onclick="toggleFaceta('anos')">
-        Período <span class="faceta-titulo-seta" id="seta-anos">▾</span>
+        Período <span class="faceta-titulo-seta fechado" id="seta-anos">▾</span>
       </div>
-      <div class="faceta-lista" id="lista-anos">
+      <div class="faceta-lista fechada" id="lista-anos">
         <div class="faceta-slider">
           <div class="faceta-slider-vals">
             <span id="sliderMinVal">${anoMinActivo}</span>
@@ -1426,9 +1441,9 @@ function renderFacetas(resultados) {
     ${grupos.map(g => g.items.length === 0 ? '' : `
       <div class="faceta-grupo">
         <div class="faceta-titulo" onclick="toggleFaceta('${g.id}')">
-          ${g.titulo} <span class="faceta-titulo-seta" id="seta-${g.id}">▾</span>
+          ${g.titulo} <span class="faceta-titulo-seta fechado" id="seta-${g.id}">▾</span>
         </div>
-        <div class="faceta-lista" id="lista-${g.id}">
+        <div class="faceta-lista fechada" id="lista-${g.id}">
           ${g.items.map(item => {
             const activo = (facetasActivas[g.id] || new Set()).has(item.valor);
             return `<label class="faceta-item ${activo?'activo':''}">
