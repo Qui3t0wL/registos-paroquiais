@@ -661,77 +661,44 @@ class Database:
 
 	# ── Verificação de duplicados ─────────────────────────────────────────────────
 	
-	def verificar_existencia_por_ref(self, tipo: str, pares: list[tuple[str, str]]) -> list[bool]:
-	    """
-	    Verifica se cada par (fonte, nr_ordem) já existe na tabela correspondente.
-	    Devolve uma lista de booleanos com o mesmo comprimento que `pares`.
-	    """
-	    tabela = {"batismo": "batismos", "casamento": "casamentos", "obito": "obitos"}[tipo]
-	    conn = self._conn()
-	    cur = conn.cursor()
-	    resultado = []
-	    
-		for fonte, nr_ordem in pares:
-	        cur.execute(
-	            f"SELECT 1 FROM {tabela} WHERE LOWER(fonte) = LOWER(?) AND LOWER(nr_ordem) = LOWER(?) LIMIT 1",
-	            (fonte, nr_ordem),
-	        )
-	        resultado.append(cur.fetchone() is not None)
-			
-	    conn.close()
-	    return resultado
-	
-	def verificar_existencia_por_bio(self, tipo: str, chaves: list[tuple]) -> list[bool]:
-	    """
-	    Verifica duplicados por campos biográficos para registos sem referência de arquivo.
-	    A chave tem o formato (tipo, "bio", ano, campo1, campo2[, campo3]).
-	    """
-	    tabela = {"batismo": "batismos", "casamento": "casamentos", "obito": "obitos"}[tipo]
-	    conn = self._conn()
-	    cur = conn.cursor()
-	    resultado = []
-	
-	    for chave in chaves:
-	        # chave[2] = ano, restantes = campos de nome
-	        ano = chave[2]
-	
-	        if tipo == "batismo":
-	            # (tipo, "bio", ano, nome, pai, mae)
-	            _, _, ano, nome, pai, mae = chave
-	            cur.execute(
-	                f"""SELECT 1 FROM {tabela}
-	                    WHERE ano = ?
-	                      AND LOWER(nome) = LOWER(?)
-	                      AND LOWER(COALESCE(pai, '')) = LOWER(?)
-	                      AND LOWER(COALESCE(mae, '')) = LOWER(?)
-	                    LIMIT 1""",
-	                (ano, nome, pai, mae),
-	            )
-	        elif tipo == "casamento":
-	            # (tipo, "bio", ano, noivo, noiva)
-	            _, _, ano, noivo, noiva = chave
-	            cur.execute(
-	                f"""SELECT 1 FROM {tabela}
-	                    WHERE ano = ?
-	                      AND LOWER(noivo) = LOWER(?)
-	                      AND LOWER(noiva) = LOWER(?)
-	                    LIMIT 1""",
-	                (ano, noivo, noiva),
-	            )
-	        else:  # obito
-	            # (tipo, "bio", ano, nome, pai, mae)
-	            _, _, ano, nome, pai, mae = chave
-	            cur.execute(
-	                f"""SELECT 1 FROM {tabela}
-	                    WHERE ano = ?
-	                      AND LOWER(nome) = LOWER(?)
-	                      AND LOWER(COALESCE(pai, '')) = LOWER(?)
-	                      AND LOWER(COALESCE(mae, '')) = LOWER(?)
-	                    LIMIT 1""",
-	                (ano, nome, pai, mae),
-	            )
-	
-	        resultado.append(cur.fetchone() is not None)
-	
-	    conn.close()
-	    return resultado
+	def verificar_existencia_por_ref(self, tipo: str, pares: list) -> list:
+        tabela = {"batismo": "batismos", "casamento": "casamentos", "obito": "obitos"}[tipo]
+        conn = self._conn()
+        cur = conn.cursor()
+        resultado = []
+        for fonte, nr_ordem in pares:
+            cur.execute(
+                f"SELECT 1 FROM {tabela} WHERE LOWER(fonte) = LOWER(?) AND LOWER(nr_ordem) = LOWER(?) LIMIT 1",
+                (fonte, nr_ordem),
+            )
+            resultado.append(cur.fetchone() is not None)
+        conn.close()
+        return resultado
+
+    def verificar_existencia_por_bio(self, tipo: str, chaves: list) -> list:
+        tabela = {"batismo": "batismos", "casamento": "casamentos", "obito": "obitos"}[tipo]
+        conn = self._conn()
+        cur = conn.cursor()
+        resultado = []
+        for chave in chaves:
+            if tipo == "batismo":
+                _, _, ano, nome, pai, mae = chave
+                cur.execute(
+                    f"SELECT 1 FROM {tabela} WHERE ano = ? AND LOWER(nome) = LOWER(?) AND LOWER(COALESCE(pai, '')) = LOWER(?) AND LOWER(COALESCE(mae, '')) = LOWER(?) LIMIT 1",
+                    (ano, nome, pai, mae),
+                )
+            elif tipo == "casamento":
+                _, _, ano, noivo, noiva = chave
+                cur.execute(
+                    f"SELECT 1 FROM {tabela} WHERE ano = ? AND LOWER(noivo) = LOWER(?) AND LOWER(noiva) = LOWER(?) LIMIT 1",
+                    (ano, noivo, noiva),
+                )
+            else:
+                _, _, ano, nome, pai, mae = chave
+                cur.execute(
+                    f"SELECT 1 FROM {tabela} WHERE ano = ? AND LOWER(nome) = LOWER(?) AND LOWER(COALESCE(pai, '')) = LOWER(?) AND LOWER(COALESCE(mae, '')) = LOWER(?) LIMIT 1",
+                    (ano, nome, pai, mae),
+                )
+            resultado.append(cur.fetchone() is not None)
+        conn.close()
+        return resultado
