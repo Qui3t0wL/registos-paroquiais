@@ -434,6 +434,10 @@
             <div class="estat-num vermelho" id="rErros">0</div>
             <div class="estat-label">Erros críticos</div>
           </div>
+					<div class="estat-item" id="blocoDuplicados" style="display:none">
+				    <div class="estat-num amarelo" id="rDuplicados">0</div>
+				    <div class="estat-label">Duplicados</div>
+					</div>
         </div>
 
         <ul class="lista-mensagens" id="listaErros" style="display:none"></ul>
@@ -575,6 +579,16 @@ function renderRelatorio(d, tipo) {
   document.getElementById('rTotal').textContent = d.total_registos || 0;
   document.getElementById('rAvisos').textContent = d.total_avisos || 0;
   document.getElementById('rErros').textContent = d.total_erros || 0;
+	
+	// Mostrar duplicados se existirem
+	const rDupEl = document.getElementById('rDuplicados');
+	const dupBloco = document.getElementById('blocoDuplicados');
+	if (d.total_duplicados > 0) {
+	    rDupEl.textContent = d.total_duplicados;
+	    dupBloco.style.display = 'block';
+	} else {
+	    dupBloco.style.display = 'none';
+	}
 
   const pill = document.getElementById('pillEstado');
   if (d.total_erros > 0) {
@@ -622,7 +636,9 @@ function renderRelatorio(d, tipo) {
   if (d.total_erros === 0 && d.total_registos > 0) {
     acoes.innerHTML = `
       <button class="btn btn-confirmar" onclick="confirmarImportacao('${tipo}')">
-        Importar ${d.total_registos} registos
+        d.total_duplicados > 0
+				    ? Importar ${d.total_novos} registos novos (${d.total_duplicados} duplicado(s) serão ignorados)
+				    : Importar ${d.total_novos} registos
       </button>
       <button class="btn btn-cancelar" onclick="cancelar()">Cancelar</button>
     `;
