@@ -342,6 +342,170 @@
 		footer { padding: 1.5rem 1rem; margin-top: 2rem; }
   	.footer-principal { font-size: 0.75rem; }
 	}
+
+	/* ── Tokens e nós federados ────────────────────────────────────────────────── */
+	
+	.fed-grid {
+	  display: grid;
+	  grid-template-columns: 1fr 1fr;
+	  gap: 1.5rem;
+	  margin-bottom: 3rem;
+	}
+	
+	/* Token recém-criado — caixa de destaque */
+	.token-reveal {
+	  background: #0f1f0f;
+	  border: 1px solid var(--verde);
+	  border-radius: 4px;
+	  padding: 1rem 1.2rem;
+	  margin-bottom: 1.2rem;
+	  display: none;
+	}
+	.token-reveal.visivel { display: block; }
+	.token-reveal-label {
+	  font-size: 0.65rem;
+	  font-weight: 600;
+	  letter-spacing: 0.08em;
+	  text-transform: uppercase;
+	  color: var(--verde-clr);
+	  margin-bottom: 0.5rem;
+	}
+	.token-reveal-valor {
+	  font-family: monospace;
+	  font-size: 0.95rem;
+	  color: #7fff7f;
+	  word-break: break-all;
+	  letter-spacing: 0.04em;
+	  margin-bottom: 0.6rem;
+	}
+	.token-reveal-aviso {
+	  font-size: 0.75rem;
+	  color: var(--amarelo-cl);
+	}
+	
+	/* Cards de token */
+	.token-card {
+	  background: var(--bg2);
+	  border: 1px solid var(--linha);
+	  border-left: 3px solid var(--batismo);
+	  border-radius: 4px;
+	  padding: 0.85rem 1rem;
+	  display: grid;
+	  grid-template-columns: 1fr auto;
+	  gap: 0.4rem 0.8rem;
+	  align-items: start;
+	  margin-bottom: 0.5rem;
+	}
+	.token-card.revogado {
+	  border-left-color: var(--linha);
+	  opacity: 0.55;
+	}
+	.token-nome {
+	  font-size: 0.88rem;
+	  font-weight: 500;
+	  color: var(--texto);
+	}
+	.token-preview {
+	  font-family: monospace;
+	  font-size: 0.75rem;
+	  color: var(--texto-sub);
+	  margin-top: 0.15rem;
+	}
+	.token-meta {
+	  display: flex;
+	  flex-wrap: wrap;
+	  gap: 0.35rem;
+	  margin-top: 0.45rem;
+	}
+	.token-chip {
+	  font-size: 0.65rem;
+	  padding: 0.12rem 0.45rem;
+	  border-radius: 10px;
+	  background: var(--bg3);
+	  color: var(--texto-sub);
+	}
+	.token-chip.ok     { background: rgba(61,170,106,0.1); color: var(--verde-clr); }
+	.token-chip.rev    { background: rgba(204,68,68,0.1);  color: var(--vermelho-cl); }
+	
+	/* Cards de nó */
+	.no-card {
+	  background: var(--bg2);
+	  border: 1px solid var(--linha);
+	  border-left: 3px solid var(--casamento);
+	  border-radius: 4px;
+	  padding: 0.85rem 1rem;
+	  display: grid;
+	  grid-template-columns: 1fr auto;
+	  gap: 0.4rem 0.8rem;
+	  align-items: start;
+	  margin-bottom: 0.5rem;
+	}
+	.no-card.inactivo  { border-left-color: var(--linha); opacity: 0.6; }
+	.no-card.com-erro  { border-left-color: var(--vermelho); }
+	.no-nome { font-size: 0.88rem; font-weight: 500; color: var(--texto); }
+	.no-url  {
+	  font-family: monospace; font-size: 0.72rem;
+	  color: var(--texto-sub); margin-top: 0.15rem; word-break: break-all;
+	}
+	.no-meta {
+	  display: flex; flex-wrap: wrap;
+	  gap: 0.35rem; margin-top: 0.45rem;
+	}
+	.no-chip {
+	  font-size: 0.65rem; padding: 0.12rem 0.45rem;
+	  border-radius: 10px; background: var(--bg3); color: var(--texto-sub);
+	}
+	.no-chip.ok     { background: rgba(61,170,106,0.1); color: var(--verde-clr); }
+	.no-chip.erro   { background: rgba(204,68,68,0.1);  color: var(--vermelho-cl); }
+	.no-chip.regiao { background: rgba(74,94,118,0.1);  color: var(--batismo); }
+	
+	/* Botões de acção pequenos */
+	.acoes-fed { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: flex-end; }
+	.acoes-fed .btn { padding: 0.28rem 0.6rem; font-size: 0.72rem; }
+	.btn-rev    { background: rgba(212,170,32,0.1); color: var(--amarelo-cl); border: 1px solid rgba(212,170,32,0.3); }
+	.btn-rev:hover { background: rgba(212,170,32,0.2); }
+	.btn-act    { background: rgba(61,170,106,0.1); color: var(--verde-clr);  border: 1px solid rgba(61,170,106,0.3); }
+	.btn-act:hover { background: rgba(61,170,106,0.2); }
+	.btn-del    { background: rgba(204,68,68,0.08); color: var(--vermelho-cl); border: 1px solid rgba(204,68,68,0.2); }
+	.btn-del:hover { background: rgba(204,68,68,0.15); }
+	.btn-tst    { background: var(--bg3); color: var(--texto-sub); border: 1px solid var(--linha); }
+	.btn-tst:hover { border-color: var(--casamento); color: var(--casamento); }
+	
+	/* Formulários inline */
+	.form-fed {
+	  display: grid;
+	  grid-template-columns: 1fr 1fr;
+	  gap: 0.7rem;
+	  margin-top: 1rem;
+	}
+	.form-fed .grupo.largo { grid-column: 1 / -1; }
+	.form-fed .grupo label { font-size: 0.67rem; }
+	.form-fed .grupo input {
+	  background: var(--bg3);
+	  border: 1px solid var(--linha);
+	  color: var(--texto);
+	  padding: 0.52rem 0.75rem;
+	  border-radius: 3px;
+	  font-size: 0.86rem;
+	  outline: none;
+	  width: 100%;
+	}
+	.form-fed .grupo input:focus { border-color: var(--batismo); }
+	.form-fed-acoes {
+	  margin-top: 0.9rem;
+	  display: flex;
+	  gap: 0.6rem;
+	  align-items: center;
+	}
+	.form-fed-status { font-size: 0.78rem; color: var(--texto-sub); }
+	
+	@media (max-width: 640px) {
+	  .fed-grid  { grid-template-columns: 1fr; }
+	  .form-fed  { grid-template-columns: 1fr; }
+	  .form-fed .grupo.largo { grid-column: 1; }
+	  .no-card, .token-card { grid-template-columns: 1fr; }
+	  .acoes-fed { justify-content: flex-start; margin-top: 0.4rem; }
+	}
 	
 	/* ── Mobile pequeno (≤ 375px) ── */
 	@media (max-width: 375px) {
@@ -457,6 +621,119 @@
 	    </div>
 	  </div>
 	</div>
+
+	<div class="secao">
+	  <h2>Federação</h2>
+	  <p style="color:var(--texto-sub);font-size:0.85rem;margin-bottom:1.5rem;line-height:1.6;max-width:680px">
+	    A federação permite que esta instância faça parte de uma rede de arquivos paroquiais.
+	    <strong style="color:var(--texto)">Tokens emitidos</strong> autorizam outros nós a ligarem-se a este arquivo.
+	    <strong style="color:var(--texto)">Nós federados</strong> são os arquivos remotos a que este nó se liga para pesquisas alargadas.
+	  </p>
+	
+	  <div class="fed-grid">
+	
+	    <!-- ── Coluna esquerda: Tokens emitidos ── -->
+	    <div>
+	      <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--texto-sub);margin-bottom:0.8rem">
+	        Tokens emitidos
+	        <span style="font-weight:300;text-transform:none;letter-spacing:0"> — para partilhar com outros owners</span>
+	      </div>
+	
+	      <!-- Token revelado após criação -->
+	      <div class="token-reveal" id="tokenReveal">
+	        <div class="token-reveal-label">✓ Token gerado — copia agora</div>
+	        <div class="token-reveal-valor" id="tokenValor"></div>
+	        <div style="display:flex;gap:0.5rem;margin-bottom:0.6rem">
+	          <button class="btn btn-primario" style="padding:0.3rem 0.8rem;font-size:0.75rem"
+	                  onclick="copiarToken()">Copiar</button>
+	          <button class="btn btn-cancelar" style="padding:0.3rem 0.8rem;font-size:0.75rem"
+	                  onclick="fecharTokenReveal()">Fechar</button>
+	        </div>
+	        <div class="token-reveal-aviso">⚠ Este token não voltará a ser mostrado. Partilha-o com o owner do nó que se vai federar contigo.</div>
+	      </div>
+	
+	      <!-- Formulário de criação -->
+	      <div class="painel" style="margin-bottom:1rem">
+	        <div style="font-size:0.78rem;color:var(--texto-sub);margin-bottom:0.8rem">
+	          Cria um token por cada nó que autorizes a ligar-se a este arquivo.
+	        </div>
+	        <div class="form-fed">
+	          <div class="grupo largo">
+	            <label>Nome da ligação <span style="color:var(--vermelho-cl)">*</span></label>
+	            <input type="text" id="tokenNome" placeholder="Ex: Ligação com Abrantes">
+	          </div>
+	          <div class="grupo largo">
+	            <label>Descrição (opcional)</label>
+	            <input type="text" id="tokenDesc" placeholder="Ex: Arquivo da paróquia de S. Vicente de Abrantes">
+	          </div>
+	        </div>
+	        <div class="form-fed-acoes">
+	          <button class="btn btn-primario" id="btnCriarToken" onclick="criarToken()">
+	            Gerar token
+	          </button>
+	          <span class="form-fed-status" id="tokenStatus"></span>
+	        </div>
+	      </div>
+	
+	      <!-- Lista de tokens -->
+	      <div id="listaTokens">
+	        <p class="vazio">A carregar…</p>
+	      </div>
+	    </div>
+	
+	    <!-- ── Coluna direita: Nós federados ── -->
+	    <div>
+	      <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--texto-sub);margin-bottom:0.8rem">
+	        Nós federados
+	        <span style="font-weight:300;text-transform:none;letter-spacing:0"> — arquivos remotos autorizados</span>
+	      </div>
+	
+	      <!-- Formulário de adição -->
+	      <div class="painel" style="margin-bottom:1rem">
+	        <div style="font-size:0.78rem;color:var(--texto-sub);margin-bottom:0.8rem">
+	          Introduz o URL e o token fornecido pelo owner do arquivo remoto.
+	          A ligação é verificada antes de ser guardada.
+	        </div>
+	        <div class="form-fed">
+	          <div class="grupo largo">
+	            <label>URL do nó <span style="color:var(--vermelho-cl)">*</span></label>
+	            <input type="url" id="noUrl" placeholder="https://registos.outraparquia.pt">
+	          </div>
+	          <div class="grupo">
+	            <label>Nome <span style="color:var(--vermelho-cl)">*</span></label>
+	            <input type="text" id="noNome" placeholder="Ex: Registos de Abrantes">
+	          </div>
+	          <div class="grupo">
+	            <label>Região</label>
+	            <input type="text" id="noRegiao" placeholder="Ex: Ribatejo">
+	          </div>
+	          <div class="grupo largo">
+	            <label>Token <span style="color:var(--vermelho-cl)">*</span></label>
+	            <input type="text" id="noToken" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+	                   autocomplete="off" spellcheck="false">
+	          </div>
+	          <div class="grupo largo">
+	            <label>Descrição (opcional)</label>
+	            <input type="text" id="noDescricao" placeholder="Breve descrição do arquivo">
+	          </div>
+	        </div>
+	        <div class="form-fed-acoes">
+	          <button class="btn btn-primario" id="btnAdicionarNo" onclick="adicionarNo()">
+	            Verificar e adicionar
+	          </button>
+	          <span class="form-fed-status" id="noStatus"></span>
+	        </div>
+	      </div>
+	
+	      <!-- Lista de nós -->
+	      <div id="listaNos">
+	        <p class="vazio">A carregar…</p>
+	      </div>
+	    </div>
+	
+	  </div><!-- /fed-grid -->
+	</div>
+	
   <!-- Reset -->
   <div class="secao">
     <h2>Reinicializar base de dados</h2>
@@ -866,9 +1143,281 @@ function renderAuditoria(d) {
     </div>` : ''}
   `;
 }
-	
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Tokens emitidos
+// ══════════════════════════════════════════════════════════════════════════════
+
+async function carregarTokens() {
+  try {
+    const r = await fetch('/admin/api/tokens');
+    renderTokens(await r.json());
+  } catch(e) {
+    document.getElementById('listaTokens').innerHTML =
+      '<p class="vazio">Erro ao carregar tokens.</p>';
+  }
+}
+
+function renderTokens(tokens) {
+  const cont = document.getElementById('listaTokens');
+  if (!tokens.length) {
+    cont.innerHTML = '<p class="vazio">Nenhum token emitido ainda.</p>';
+    return;
+  }
+  cont.innerHTML = tokens.map(t => {
+    const revogado = !t.activo;
+    return `
+    <div class="token-card ${revogado ? 'revogado' : ''}">
+      <div>
+        <div class="token-nome">${t.nome}</div>
+        <div class="token-preview">${t.token_preview}</div>
+        ${t.descricao ? `<div style="font-size:0.75rem;color:var(--texto-sub);margin-top:0.2rem">${t.descricao}</div>` : ''}
+        <div class="token-meta">
+          ${revogado
+            ? `<span class="token-chip rev">revogado</span>`
+            : `<span class="token-chip ok">activo</span>`}
+          <span class="token-chip">criado ${t.data_criacao?.substring(0,10)}</span>
+          ${t.ultimo_uso
+            ? `<span class="token-chip ok">último uso ${t.ultimo_uso.substring(0,16).replace('T',' ')}</span>`
+            : `<span class="token-chip">nunca usado</span>`}
+        </div>
+      </div>
+      <div class="acoes-fed">
+        ${!revogado
+          ? `<button class="btn btn-rev" onclick="revogarToken(${t.id})">Revogar</button>`
+          : ''}
+        <button class="btn btn-del" onclick="removerToken(${t.id})">Remover</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function criarToken() {
+  const nome = document.getElementById('tokenNome').value.trim();
+  const desc = document.getElementById('tokenDesc').value.trim();
+  const status = document.getElementById('tokenStatus');
+  const btn    = document.getElementById('btnCriarToken');
+
+  if (!nome) {
+    status.textContent = '⚠ O nome é obrigatório.';
+    status.style.color = 'var(--vermelho-cl)';
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'A gerar…';
+  status.textContent = ''; 
+
+  try {
+    const r = await fetch('/admin/api/tokens', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome, descricao: desc || null }),
+    });
+    const d = await r.json();
+    if (!r.ok) {
+      status.textContent = `✕ ${d.detail}`;
+      status.style.color = 'var(--vermelho-cl)';
+    } else {
+      // Mostrar token em destaque — único momento em que é visível
+      document.getElementById('tokenValor').textContent = d.token;
+      document.getElementById('tokenReveal').classList.add('visivel');
+      document.getElementById('tokenNome').value = '';
+      document.getElementById('tokenDesc').value = '';
+      status.textContent = '';
+      await carregarTokens();
+    }
+  } catch(e) {
+    status.textContent = '✕ Erro ao comunicar com o servidor.';
+    status.style.color = 'var(--vermelho-cl)';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Gerar token';
+  }
+}
+
+function copiarToken() {
+  const val = document.getElementById('tokenValor').textContent;
+  navigator.clipboard.writeText(val).then(() => {
+    const btn = document.querySelector('#tokenReveal .btn-primario');
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => { btn.textContent = 'Copiar'; }, 2000);
+  });
+}
+
+function fecharTokenReveal() {
+  document.getElementById('tokenReveal').classList.remove('visivel');
+  document.getElementById('tokenValor').textContent = '';
+}
+
+async function revogarToken(id) {
+  if (!confirm('Revogar este token?\nO nó que o usa deixará imediatamente de conseguir ligar-se.')) return;
+  await fetch(`/admin/api/tokens/${id}/revogar`, { method: 'DELETE' });
+  await carregarTokens();
+}
+
+async function removerToken(id) {
+  if (!confirm('Remover este token permanentemente?')) return;
+  await fetch(`/admin/api/tokens/${id}`, { method: 'DELETE' });
+  await carregarTokens();
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Nós federados
+// ══════════════════════════════════════════════════════════════════════════════
+
+async function carregarNos() {
+  try {
+    const r = await fetch('/admin/api/nos-federados');
+    renderNos(await r.json());
+  } catch(e) {
+    document.getElementById('listaNos').innerHTML =
+      '<p class="vazio">Erro ao carregar nós.</p>';
+  }
+}
+
+function renderNos(nos) {
+  const cont = document.getElementById('listaNos');
+  if (!nos.length) {
+    cont.innerHTML = '<p class="vazio">Nenhum nó federado registado ainda.</p>';
+    return;
+  }
+  cont.innerHTML = nos.map(no => {
+    const temErro  = !!no.ultimo_erro;
+    const inactivo = !no.activo;
+    const cls = inactivo ? 'inactivo' : (temErro ? 'com-erro' : '');
+
+    const chipEstado = inactivo
+      ? `<span class="no-chip">suspenso</span>`
+      : temErro
+        ? `<span class="no-chip erro" title="${no.ultimo_erro}">⚠ erro</span>`
+        : no.ultimo_ok
+          ? `<span class="no-chip ok">✓ ok · ${no.ultimo_ok.substring(0,16).replace('T',' ')}</span>`
+          : `<span class="no-chip">não testado</span>`;
+
+    return `
+    <div class="no-card ${cls}" id="no-${no.id}">
+      <div>
+        <div class="no-nome">${no.nome}</div>
+        <div class="no-url">${no.url}</div>
+        ${no.descricao ? `<div style="font-size:0.75rem;color:var(--texto-sub);margin-top:0.2rem">${no.descricao}</div>` : ''}
+        <div class="no-meta">
+          ${no.regiao ? `<span class="no-chip regiao">📍 ${no.regiao}</span>` : ''}
+          ${chipEstado}
+          <span class="no-chip">adicionado ${no.data_adicao?.substring(0,10)}</span>
+        </div>
+      </div>
+      <div class="acoes-fed">
+        <button class="btn btn-tst" onclick="testarNo(${no.id})">Testar</button>
+        ${no.activo
+          ? `<button class="btn btn-rev" onclick="toggleNo(${no.id}, 0)">Suspender</button>`
+          : `<button class="btn btn-act" onclick="toggleNo(${no.id}, 1)">Activar</button>`}
+        <button class="btn btn-del"
+                onclick="removerNo(${no.id}, '${no.nome.replace(/'/g,"\\'")}')">Remover</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function adicionarNo() {
+  const url    = document.getElementById('noUrl').value.trim();
+  const nome   = document.getElementById('noNome').value.trim();
+  const token  = document.getElementById('noToken').value.trim();
+  const regiao = document.getElementById('noRegiao').value.trim();
+  const desc   = document.getElementById('noDescricao').value.trim();
+  const status = document.getElementById('noStatus');
+  const btn    = document.getElementById('btnAdicionarNo');
+
+  if (!url || !nome || !token) {
+    status.textContent = '⚠ URL, Nome e Token são obrigatórios.';
+    status.style.color = 'var(--vermelho-cl)';
+    return;
+  }
+
+  // Validar formato UUID v4 no cliente
+  const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  if (!uuidRe.test(token)) {
+    status.textContent = '⚠ O token não parece um UUID v4 válido.';
+    status.style.color = 'var(--vermelho-cl)';
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'A verificar…';
+  status.textContent = 'A contactar o nó remoto…';
+  status.style.color = 'var(--texto-sub)';
+
+  try {
+    const r = await fetch('/admin/api/nos-federados', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url, nome, token,
+        regiao: regiao || null,
+        descricao: desc || null,
+      }),
+    });
+    const d = await r.json();
+    if (!r.ok) {
+      status.textContent = `✕ ${d.detail}`;
+      status.style.color = 'var(--vermelho-cl)';
+    } else {
+      status.textContent = `✓ Nó adicionado com sucesso.`;
+      status.style.color = 'var(--verde-clr)';
+      ['noUrl','noNome','noToken','noRegiao','noDescricao'].forEach(
+        id => document.getElementById(id).value = ''
+      );
+      await carregarNos();
+      setTimeout(() => { status.textContent = ''; }, 4000);
+    }
+  } catch(e) {
+    status.textContent = '✕ Erro ao comunicar com o servidor.';
+    status.style.color = 'var(--vermelho-cl)';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Verificar e adicionar';
+  }
+}
+
+async function testarNo(id) {
+  const card = document.getElementById(`no-${id}`);
+  const btn  = card?.querySelector('.btn-tst');
+  if (btn) { btn.disabled = true; btn.textContent = 'A testar…'; }
+  try {
+    const r = await fetch(`/admin/api/nos-federados/${id}/testar`, { method: 'POST' });
+    const d = await r.json();
+    if (d.sucesso) {
+      const s = d.info?.stats;
+      const resumo = s
+        ? `B:${s.batismos?.total||0} · C:${s.casamentos?.total||0} · Ó:${s.obitos?.total||0}`
+        : '';
+      mostrarAlerta('sucesso', `✓ Nó acessível. ${resumo}`);
+    } else {
+      mostrarAlerta('erro', `✕ Nó inacessível: ${d.erro}`);
+    }
+  } catch(e) {
+    mostrarAlerta('erro', 'Erro ao testar o nó.');
+  }
+  await carregarNos();
+}
+
+async function toggleNo(id, activo) {
+  await fetch(`/admin/api/nos-federados/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ activo }),
+  });
+  await carregarNos();
+}
+
+async function removerNo(id, nome) {
+  if (!confirm(`Remover o nó "${nome}"?\nEsta acção não pode ser desfeita.`)) return;
+  await fetch(`/admin/api/nos-federados/${id}`, { method: 'DELETE' });
+  await carregarNos();
+  mostrarAlerta('sucesso', `✓ Nó "${nome}" removido.`);
+}
+
 carregarFreguesias();
 carregarAuditoria();
+carregarTokens();
+carregarNos();
 </script>
 
 <footer>
