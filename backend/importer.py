@@ -108,6 +108,48 @@ def validar_ano(val: Any) -> tuple[Optional[int], Optional[str]]:
     return ano, None
 
 
+def _chave_registo(reg: dict, tipo: str) -> tuple:
+    """
+    Gera uma chave de identificação única para um registo.
+    Prioridade 1: fonte + nr_ordem (referência de arquivo — univocamente identificadora).
+    Prioridade 2: campos biográficos.
+    """
+    fonte    = (reg.get("fonte") or "").strip().lower()
+    nr_ordem = (reg.get("nr_ordem") or "").strip().lower()
+
+    if fonte and fonte != "n/d" and nr_ordem and nr_ordem != "n/d":
+        return (tipo, "ref", fonte, nr_ordem)
+
+    ano = str(reg.get("ano") or "")
+    if tipo == "batismo":
+        nome = (reg.get("nome") or "").strip().lower()
+        pai  = (reg.get("pai")  or "").strip().lower()
+        mae  = (reg.get("mae")  or "").strip().lower()
+        return (tipo, "bio", ano, nome, pai, mae)
+    elif tipo == "casamento":
+        noivo = (reg.get("noivo") or "").strip().lower()
+        noiva = (reg.get("noiva") or "").strip().lower()
+        return (tipo, "bio", ano, noivo, noiva)
+    else:
+        nome = (reg.get("nome") or "").strip().lower()
+        pai  = (reg.get("pai")  or "").strip().lower()
+        mae  = (reg.get("mae")  or "").strip().lower()
+        return (tipo, "bio", ano, nome, pai, mae)
+
+
+def _descrever_registo(reg: dict, tipo: str) -> str:
+    ano    = reg.get("ano") or "?"
+    folha  = reg.get("_folha", "?")
+    linha  = reg.get("_nr_linha", "?")
+    loc    = f"[{folha}] linha {linha}"
+    if tipo == "batismo":
+        return f"{loc}: {reg.get('nome') or '?'} ({ano})"
+    elif tipo == "casamento":
+        return f"{loc}: {reg.get('noivo') or '?'} & {reg.get('noiva') or '?'} ({ano})"
+    else:
+        return f"{loc}: {reg.get('nome') or '?'} ({ano})"
+
+
 class ExcelImporter:
     def __init__(self, db: Database):
         self.db = db
@@ -140,11 +182,29 @@ class ExcelImporter:
 
         wb.close()
 
+        # ── Detecção de duplicados ────────────────────────────────────────────
+
+        # 1. Duplicados dentro do próprio ficheiro
+        dup_intra, registos_unicos = self._detectar_duplicados_intra(todos_registos, tipo)
+        for desc in dup_intra:
+            todos_avisos.append(f"Duplicado no ficheiro: {desc}")
+
+        # 2. Duplicados contra a base de dados existente
+        dup_bd, registos_novos = self._detectar_duplicados_bd(registos_unicos, tipo)
+        for desc in dup_bd:
+            todos_avisos.append(f"Já existe na BD: {desc}")
+
+        total_duplicados = len(dup_intra) + len(dup_bd)
+
         resumo = {
             "sucesso": True,
             "ficheiro": nome_ficheiro,
             "tipo": tipo,
             "total_registos": len(todos_registos),
+            "total_novos": len(registos_novos),
+            "total_duplicados": total_duplicados,
+            "total_duplicados_intra": len(dup_intra),
+            "total_duplicados_bd": len(dup_bd),
             "total_avisos": len(todos_avisos),
             "total_erros": len(erros_criticos),
             "avisos": todos_avisos[:100],  # limitar para não sobrecarregar a resposta
@@ -154,25 +214,81 @@ class ExcelImporter:
 
         if not dry_run and not erros_criticos:
             upload_id = self.db.criar_upload(
-                nome_ficheiro, tipo, len(todos_registos), len(todos_avisos), freguesia
+                nome_ficheiro, tipo, len(registos_novos), len(todos_avisos), freguesia
             )
             # Após inserir, extrair e guardar código do arquivo
             codigo = self.db.extrair_codigo_adist(upload_id, tipo)
             if codigo:
                 self.db.actualizar_codigo_adist(upload_id, codigo)
             if tipo == "batismo":
-                self.db.inserir_batismos(todos_registos, upload_id)
+                self.db.inserir_batismos(registos_novos, upload_id)
             elif tipo == "casamento":
-                self.db.inserir_casamentos(todos_registos, upload_id)
+                self.db.inserir_casamentos(registos_novos, upload_id)
             elif tipo == "obito":
-                self.db.inserir_obitos(todos_registos, upload_id)
+                self.db.inserir_obitos(registos_novos, upload_id)
             resumo["upload_id"] = upload_id
-            resumo["mensagem"] = f"{len(todos_registos)} registos importados com sucesso."
+            if total_duplicados > 0:
+                resumo["mensagem"] = (
+                    f"{len(registos_novos)} registos importados. "
+                    f"{total_duplicados} duplicado(s) ignorado(s)."
+                )
+            else:
+                resumo["mensagem"] = f"{len(registos_novos)} registos importados com sucesso."
         elif not dry_run and erros_criticos:
             resumo["sucesso"] = False
             resumo["mensagem"] = "Importação cancelada devido a erros críticos."
 
         return resumo
+
+    def _detectar_duplicados_intra(
+        self, registos: list, tipo: str
+    ) -> tuple[list[str], list[dict]]:
+        """Detecta duplicados dentro do ficheiro (incluindo entre folhas diferentes)."""
+        visto = {}
+        unicos = []
+        duplicados = []
+        for reg in registos:
+            chave = _chave_registo(reg, tipo)
+            if chave in visto:
+                duplicados.append(_descrever_registo(reg, tipo))
+            else:
+                visto[chave] = True
+                unicos.append(reg)
+        return duplicados, unicos
+
+    def _detectar_duplicados_bd(
+        self, registos: list, tipo: str
+    ) -> tuple[list[str], list[dict]]:
+        """Verifica quais registos já existem na base de dados."""
+        if not registos:
+            return [], []
+
+        refs = [(i, r) for i, r in enumerate(registos)
+                if _chave_registo(r, tipo)[1] == "ref"]
+        bios = [(i, r) for i, r in enumerate(registos)
+                if _chave_registo(r, tipo)[1] == "bio"]
+
+        existentes_idx = set()
+        duplicados = []
+
+        if refs:
+            pares = [(r.get("fonte", ""), r.get("nr_ordem", "")) for _, r in refs]
+            resultados = self.db.verificar_existencia_por_ref(tipo, pares)
+            for i, (idx, reg) in enumerate(refs):
+                if resultados[i]:
+                    existentes_idx.add(idx)
+                    duplicados.append(_descrever_registo(reg, tipo))
+
+        if bios:
+            chaves = [_chave_registo(r, tipo) for _, r in bios]
+            resultados = self.db.verificar_existencia_por_bio(tipo, chaves)
+            for i, (idx, reg) in enumerate(bios):
+                if resultados[i]:
+                    existentes_idx.add(idx)
+                    duplicados.append(_descrever_registo(reg, tipo))
+
+        novos = [r for i, r in enumerate(registos) if i not in existentes_idx]
+        return duplicados, novos
 
     def _processar_folha(self, ws, nome_folha, tipo, mapa, obrigatorios):
         registos = []
@@ -213,23 +329,21 @@ class ExcelImporter:
                 f"[{nome_folha}] Colunas não reconhecidas (serão ignoradas): "
                 + ", ".join(colunas_nao_reconhecidas)
             )
-
+        
         # Verificar colunas obrigatórias
         for campo in obrigatorios:
             if campo not in indice_campo:
-                erros.append(
-                    f"[{nome_folha}] Coluna obrigatória em falta: '{campo}'"
-                )
+                erros.append(f"[{nome_folha}] Coluna obrigatória em falta: '{campo}'")
 
         if erros:
             return registos, avisos, erros
-
+        
         # Processar linhas de dados
         for nr_linha, row in enumerate(rows[cabecalho_idx + 1:], start=cabecalho_idx + 2):
             if all(v is None or str(v).strip() == "" for v in row):
-                continue  # linha vazia
+                continue
 
-            reg = {}
+            reg = {"_folha": nome_folha, "_nr_linha": nr_linha}
             for campo, idx in indice_campo.items():
                 val = row[idx] if idx < len(row) else None
                 if campo == "ano":
