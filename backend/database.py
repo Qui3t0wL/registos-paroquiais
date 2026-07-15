@@ -186,7 +186,7 @@ class Database:
 
         conn.commit()
         conn.close()
-		self._criar_tabelas_federacao()
+        self._criar_tabelas_federacao()
 
     # ── Pesquisa unificada ────────────────────────────────────────────────────
     def pesquisar(
