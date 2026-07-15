@@ -2,6 +2,7 @@ import sqlite3
 import os
 import re
 import unicodedata
+import uuid
 from typing import Optional, Tuple, List
 from datetime import datetime
 
@@ -185,6 +186,7 @@ class Database:
 
         conn.commit()
         conn.close()
+		self._criar_tabelas_federacao()
 
     # ── Pesquisa unificada ────────────────────────────────────────────────────
     def pesquisar(
@@ -658,7 +660,199 @@ class Database:
     
         conn.close()
         return resultado
+	
+	# Tokens
+	def _criar_tabelas_federacao(self):
+        conn = self._conn()
+        cur  = conn.cursor()
 
+        # Tokens que ESTE nó emitiu para outros se ligarem a ele
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS tokens_emitidos (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            token        TEXT NOT NULL UNIQUE,
+            nome         TEXT NOT NULL,      -- ex: "Ligação com Mouriscas"
+            descricao    TEXT,
+            activo       INTEGER DEFAULT 1,
+            data_criacao TEXT NOT NULL,
+            ultimo_uso   TEXT               -- última vez que foi usado com sucesso
+        )
+        """)
+
+        # Nós remotos a que ESTE nó se liga (cada um com o seu token)
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS nos_federados (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            url          TEXT NOT NULL UNIQUE,
+            nome         TEXT NOT NULL,
+            descricao    TEXT,
+            regiao       TEXT,
+            token        TEXT NOT NULL,     -- token fornecido pelo owner do nó remoto
+            activo       INTEGER DEFAULT 1,
+            data_adicao  TEXT NOT NULL,
+            ultimo_ok    TEXT,
+            ultimo_erro  TEXT
+        )
+        """)
+
+        conn.commit()
+        conn.close()
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Tokens emitidos (este nó autoriza outros a ligarem-se)
+    # ══════════════════════════════════════════════════════════════════════════
+
+    def criar_token(self, nome: str, descricao: str = None) -> str:
+        """Gera um UUID v4 e regista-o como token activo."""
+        from datetime import datetime
+        token = str(uuid.uuid4())
+        conn  = self._conn()
+        cur   = conn.cursor()
+        cur.execute("""
+            INSERT INTO tokens_emitidos (token, nome, descricao, data_criacao)
+            VALUES (?, ?, ?, ?)
+        """, (token, nome, descricao,
+              datetime.now().isoformat(timespec="seconds")))
+        conn.commit()
+        conn.close()
+        return token
+
+    def listar_tokens(self) -> list:
+        conn = self._conn()
+        cur  = conn.cursor()
+        # Nunca devolver o valor do token na listagem — só os metadados
+        cur.execute("""
+            SELECT id, nome, descricao, activo, data_criacao, ultimo_uso,
+                   substr(token,1,8) || '…' AS token_preview
+            FROM tokens_emitidos
+            ORDER BY data_criacao DESC
+        """)
+        rows = [dict(r) for r in cur.fetchall()]
+        conn.close()
+        return rows
+
+    def validar_token(self, token: str) -> bool:
+        """Verifica se o token existe e está activo; actualiza ultimo_uso."""
+        from datetime import datetime
+        conn = self._conn()
+        cur  = conn.cursor()
+        cur.execute("""
+            SELECT id FROM tokens_emitidos
+            WHERE token = ? AND activo = 1
+        """, (token,))
+        row = cur.fetchone()
+        if row:
+            cur.execute("""
+                UPDATE tokens_emitidos SET ultimo_uso = ? WHERE id = ?
+            """, (datetime.now().isoformat(timespec="seconds"), row[0]))
+            conn.commit()
+        conn.close()
+        return row is not None
+
+    def revogar_token(self, token_id: int):
+        conn = self._conn()
+        cur  = conn.cursor()
+        cur.execute(
+            "UPDATE tokens_emitidos SET activo = 0 WHERE id = ?", (token_id,))
+        conn.commit()
+        conn.close()
+
+    def remover_token(self, token_id: int):
+        conn = self._conn()
+        cur  = conn.cursor()
+        cur.execute("DELETE FROM tokens_emitidos WHERE id = ?", (token_id,))
+        conn.commit()
+        conn.close()
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Nós federados (este nó liga-se a outros)
+    # ══════════════════════════════════════════════════════════════════════════
+
+    def adicionar_no(self, url: str, nome: str, token: str,
+                     descricao: str = None, regiao: str = None) -> int:
+        from datetime import datetime
+        url = url.rstrip("/")
+        conn = self._conn()
+        cur  = conn.cursor()
+        cur.execute("""
+            INSERT INTO nos_federados
+                (url, nome, token, descricao, regiao, data_adicao)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (url, nome, token, descricao, regiao,
+              datetime.now().isoformat(timespec="seconds")))
+        no_id = cur.lastrowid
+        conn.commit()
+        conn.close()
+        return no_id
+
+    def listar_nos(self) -> list:
+        conn = self._conn()
+        cur  = conn.cursor()
+        # Nunca expor o token na listagem
+        cur.execute("""
+            SELECT id, url, nome, descricao, regiao, activo,
+                   data_adicao, ultimo_ok, ultimo_erro
+            FROM nos_federados
+            ORDER BY nome
+        """)
+        rows = [dict(r) for r in cur.fetchall()]
+        conn.close()
+        return rows
+
+    def listar_nos_activos(self) -> list:
+        """Inclui o token — usado internamente para fazer pedidos."""
+        conn = self._conn()
+        cur  = conn.cursor()
+        cur.execute("""
+            SELECT id, url, nome, token
+            FROM nos_federados
+            WHERE activo = 1
+            ORDER BY nome
+        """)
+        rows = [dict(r) for r in cur.fetchall()]
+        conn.close()
+        return rows
+
+    def actualizar_no(self, no_id: int, campos: dict):
+        permitidos = {"url", "nome", "descricao", "regiao", "activo", "token"}
+        updates = {k: v for k, v in campos.items() if k in permitidos}
+        if not updates:
+            return
+        sql = ", ".join(f"{k} = ?" for k in updates)
+        conn = self._conn()
+        cur  = conn.cursor()
+        cur.execute(f"UPDATE nos_federados SET {sql} WHERE id = ?",
+                    (*updates.values(), no_id))
+        conn.commit()
+        conn.close()
+
+    def remover_no(self, no_id: int):
+        conn = self._conn()
+        cur  = conn.cursor()
+        cur.execute("DELETE FROM nos_federados WHERE id = ?", (no_id,))
+        conn.commit()
+        conn.close()
+
+    def registar_resultado_no(self, no_id: int, sucesso: bool, erro: str = None):
+        from datetime import datetime
+        agora = datetime.now().isoformat(timespec="seconds")
+        conn  = self._conn()
+        cur   = conn.cursor()
+        if sucesso:
+            cur.execute("""
+                UPDATE nos_federados
+                SET ultimo_ok = ?, ultimo_erro = NULL
+                WHERE id = ?
+            """, (agora, no_id))
+        else:
+            cur.execute("""
+                UPDATE nos_federados
+                SET ultimo_erro = ?
+                WHERE id = ?
+            """, (f"[{agora}] {erro}", no_id))
+        conn.commit()
+        conn.close()
+		
 	# ── Verificação de duplicados ─────────────────────────────────────────────────
 	
     def verificar_existencia_por_ref(self, tipo: str, pares: list) -> list:
