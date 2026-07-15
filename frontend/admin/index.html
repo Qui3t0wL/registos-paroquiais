@@ -637,8 +637,8 @@ function renderRelatorio(d, tipo) {
     acoes.innerHTML = `
       <button class="btn btn-confirmar" onclick="confirmarImportacao('${tipo}')">
         d.total_duplicados > 0
-				    ? Importar ${d.total_novos} registos novos (${d.total_duplicados} duplicado(s) serão ignorados)
-				    : Importar ${d.total_novos} registos
+				    ? `Importar ${d.total_novos} registos novos (${d.total_duplicados} duplicado(s) serão ignorados)`
+				    : `Importar ${d.total_novos} registos`
       </button>
       <button class="btn btn-cancelar" onclick="cancelar()">Cancelar</button>
     `;
