@@ -662,7 +662,7 @@ class Database:
         return resultado
 	
 	# Tokens
-	def _criar_tabelas_federacao(self):
+    def _criar_tabelas_federacao(self):
         conn = self._conn()
         cur  = conn.cursor()
 
