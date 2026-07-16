@@ -6,6 +6,7 @@
 <title>Registos Paroquiais</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 <style>
   :root {
     --azul-escuro:  #2B2F43;
@@ -703,6 +704,7 @@
     color: #6b7280;
     border-top: 1px solid rgba(255,255,255,0.06);
     padding-top: 0.75rem;
+    text-align: center;
   }
 
   /* ── Scrollbar ── */
@@ -805,6 +807,95 @@
     .btn-pesquisar:first-child { grid-column: 1 / -1; }
     .logo-icon { width: 26px; height: 26px; font-size: 13px; }
   }
+  /* ── Botão de rede federada ────────────────────────────────────────────────── */
+  .btn-federado {
+    background: #3a4a6a;
+    color: var(--branco);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+  }
+  .btn-federado:hover  { background: #4a5e8a; }
+  .btn-federado.activo {
+    background: #1a3a5a;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.35);
+  }
+  .btn-federado svg { width: 13px; height: 13px; flex-shrink: 0; }
+  
+  /* ── Barra de estado da federação ──────────────────────────────────────────── */
+  .federado-estado {
+    display: none;
+    background: rgba(74,94,118,0.06);
+    border: 1px solid rgba(74,94,118,0.2);
+    border-radius: 6px;
+    padding: 0.45rem 0.9rem;
+    margin-top: 0.75rem;
+    font-size: 0.78rem;
+    color: var(--texto-sub);
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .federado-estado.visivel { display: flex; }
+  .fed-chip {
+    font-size: 0.68rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    background: rgba(74,94,118,0.1);
+    color: var(--azul-medio);
+  }
+  .fed-chip.erro {
+    background: rgba(204,68,68,0.08);
+    color: var(--texto-sub);
+    text-decoration: line-through;
+  }
+  
+  /* ── Separador de origem nos resultados ────────────────────────────────────── */
+  .grupo-origem {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--texto-sub);
+    padding: 0.65rem 0 0.3rem;
+    border-top: 1px solid var(--linha);
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .grupo-origem:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+  .grupo-origem-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  /* ── Origem no card (modo federado) ────────────────────────────────────────── */
+  .card-origem {
+    font-size: 0.62rem;
+    color: var(--texto-sub);
+    margin-top: 0.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  
+  /* ── Nota de origem no modal ────────────────────────────────────────────────── */
+  .modal-origem {
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--linha);
+    font-size: 0.72rem;
+    color: var(--texto-sub);
+  }
+  .modal-origem a { color: var(--azul-medio); }
+  
+  @media (max-width: 640px) {
+    /* Ocultar botão Rede em mobile — pesquisa federada é mais lenta */
+    .btn-federado { display: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -857,8 +948,23 @@
             </svg>
             Pesquisa IA
           </button>
+          <button class="btn-pesquisar btn-federado" id="btnFederado"
+                  onclick="toggleFederado()"
+                  title="Pesquisar também noutros arquivos na rede"
+                  style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="5"  r="2"/>
+              <circle cx="5"  cy="19" r="2"/>
+              <circle cx="19" cy="19" r="2"/>
+              <line x1="12" y1="7"  x2="5"  y2="17"/>
+              <line x1="12" y1="7"  x2="19" y2="17"/>
+              <line x1="5"  y1="17" x2="19" y2="17"/>
+            </svg>
+            Rede
+          </button>
           <button class="btn-ajuda" onclick="abrirAjuda()" title="Ajuda">?</button>
         </div>
+        <div class="federado-estado" id="federadoEstado"></div> <!-- pode ser no div abaixo -->
       </div>
       <div class="filtros">
         <div class="filtro-grupo">
@@ -1017,7 +1123,7 @@ const API = '';
 let paginaAtual = 1;
 let dadosEstatisticas = null;
 const POR_PAGINA = 25;
-
+let modoFederado = false;
 // Estado das facetas
 let todosResultados = [];
 let facetasActivas  = {};
@@ -1045,6 +1151,7 @@ async function init() {
       }
     }
   });
+  verificarNosFederados();
 }
 
 async function verificarAcessoIA() {
@@ -1097,6 +1204,179 @@ function filtrarTipo(tipo) {
   pesquisar(1);
 }
 
+// ── Verificar se há nós activos (decide se o botão aparece) ──────────────────
+async function verificarNosFederados() {
+  try {
+    const r = await fetch('/api/pesquisar-federado?por_pagina=1');
+    const d = await r.json();
+    // nos_consultados inclui o local; só mostrar se houver pelo menos 1 remoto
+    if ((d.nos_consultados || 1) > 1) {
+      document.getElementById('btnFederado').style.display = 'flex';
+    }
+  } catch(e) {}
+}
+
+// ── Toggle do modo federado ───────────────────────────────────────────────────
+function toggleFederado() {
+  modoFederado = !modoFederado;
+  const btn = document.getElementById('btnFederado');
+  btn.classList.toggle('activo', modoFederado);
+  btn.title = modoFederado
+    ? 'A pesquisar em toda a rede — clique para desactivar'
+    : 'Pesquisar também noutros arquivos na rede';
+  // Refazer a pesquisa com o novo modo se já houver resultados
+  if (todosResultados.length > 0 ||
+      document.getElementById('campoPesquisa').value.trim()) {
+    pesquisar(1);
+  }
+}
+
+// ── Pesquisa federada (chama o endpoint agregador) ────────────────────────────
+async function _fetchFederado(params) {
+  const r = await fetch(`/api/pesquisar-federado?${params}`);
+  return await r.json();
+}
+
+// ── Barra de estado da federação ─────────────────────────────────────────────
+function mostrarEstadoFederado(d) {
+  const el       = document.getElementById('federadoEstado');
+  const nosErro  = d.nos_com_erro || [];
+  const nRemoto  = (d.nos_consultados || 1) - 1;
+  const nOk      = nRemoto - nosErro.length;
+
+  const chips = [
+    `<span class="fed-chip">📖 Este arquivo</span>`,
+    ...Array.from({length: nOk}, (_, i) =>
+      `<span class="fed-chip">📡 Nó ${i + 1}</span>`),
+    ...nosErro.map(n =>
+      `<span class="fed-chip erro" title="${n.erro}">✕ ${n.nome}</span>`),
+  ].join('');
+
+  el.innerHTML = `
+    <span style="color:var(--azul-medio);font-weight:500">📡 Rede</span>
+    <span style="color:var(--linha)">·</span>
+    ${chips}
+    ${nosErro.length
+      ? `<span style="font-size:0.7rem">${nosErro.length} nó(s) inacessível(is)</span>`
+      : ''}`;
+  el.classList.add('visivel');
+}
+
+function esconderEstadoFederado() {
+  const el = document.getElementById('federadoEstado');
+  el.classList.remove('visivel');
+  el.innerHTML = '';
+}
+
+function _criarCard(reg, q) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.dataset.tipo = reg.tipo;
+
+  const tipoLabel = { batismo:'Batismo', casamento:'Casamento', obito:'Óbito' }[reg.tipo];
+  const detalhes  = [];
+  if (reg.data) detalhes.push(reg.data);
+  if (reg.local && reg.local !== 'n/d') detalhes.push(reg.local);
+  const pais = [reg.pai, reg.mae].filter(p => p && p !== 'n/d').join(' & ');
+  if (pais) detalhes.push(`Fil. ${pais}`);
+
+  const origemHtml = (modoFederado && reg._no && !reg._no.local)
+    ? `<div class="card-origem">📡 ${reg._no.nome}</div>`
+    : '';
+
+  card.innerHTML = `
+    <span class="badge badge-${reg.tipo}">${tipoLabel}</span>
+    <div>
+      <div class="card-nome">${destacar(reg.nome || '—', q)}</div>
+      <div class="card-detalhe">${detalhes.join(' · ')}</div>
+      ${origemHtml}
+    </div>
+    <div class="card-ano">${reg.ano || '—'}</div>`;
+
+  card.addEventListener('click', () => {
+    if (modoFederado && reg._no && !reg._no.local) {
+      _abrirDetalheRemoto(reg);
+    } else {
+      abrirDetalhe(reg.tipo, reg.id);
+    }
+  });
+  return card;
+}
+// ── Detalhe de registo remoto ─────────────────────────────────────────────────
+async function _abrirDetalheRemoto(reg) {
+  try {
+    // Usa o endpoint federado autenticado do nó remoto
+    // O token já está guardado no servidor — o nosso backend actua como proxy
+    const r = await fetch(
+      `${reg._no.url}/api/registo-federado/${reg.tipo}/${reg.id}`,
+      // Nota: o token NÃO é enviado pelo browser directamente.
+      // Para maior segurança, criar um endpoint proxy no backend local:
+      // GET /api/proxy-registo?no_url=...&tipo=...&id=...
+      // que adiciona o token server-side. Ver INTEGRACAO.md.
+    );
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const dados = await r.json();
+    _renderModalRemoto(reg, dados);
+  } catch(e) {
+    // Fallback: tentar via proxy local
+    try {
+      const r = await fetch(
+        `/api/registo-proxy?url=${encodeURIComponent(reg._no.url)}&tipo=${reg.tipo}&id=${reg.id}`
+      );
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const dados = await r.json();
+      _renderModalRemoto(reg, dados);
+    } catch(e2) {
+      alert('Não foi possível carregar o detalhe deste registo.');
+    }
+  }
+}
+
+function _renderModalRemoto(reg, dados) {
+  const tipoLabel = { batismo:'Batismo', casamento:'Casamento', obito:'Óbito' }[reg.tipo];
+  document.getElementById('modalTipoBadge').innerHTML = `
+    <span class="badge badge-${reg.tipo}">${tipoLabel}</span>
+    <span style="font-size:0.68rem;color:var(--texto-sub);margin-left:0.4rem">
+      📡 ${reg._no?.nome || reg._no?.url}
+    </span>`;
+
+  let titulo = reg.tipo === 'casamento'
+    ? `${dados.noivo || '—'} & ${dados.noiva || '—'}`
+    : (dados.nome || '—');
+  if (dados.ano) titulo += ` · ${dados.ano}`;
+  document.getElementById('modalTitulo').textContent = titulo;
+
+  const corpo = document.getElementById('modalCorpo');
+  corpo.innerHTML = '';
+  (SECOES[reg.tipo] || []).forEach(secao => {
+    const campos = secao.campos.filter(({ c }) => dados[c] && dados[c] !== 'n/d');
+    if (!campos.length) return;
+    const secDiv = document.createElement('div');
+    secDiv.className = 'modal-secao';
+    secDiv.innerHTML = `<div class="modal-secao-titulo">${secao.titulo}</div>`;
+    const grid = document.createElement('div');
+    grid.className = 'modal-grid';
+    campos.forEach(({ c, l, largo }) => {
+      const div = document.createElement('div');
+      div.className = `modal-campo${largo ? ' largo' : ''}`;
+      div.innerHTML = `<label>${l}</label><span>${dados[c]}</span>`;
+      grid.appendChild(div);
+    });
+    secDiv.appendChild(grid);
+    corpo.appendChild(secDiv);
+  });
+
+  // Rodapé com origem
+  const nota = document.createElement('div');
+  nota.className = 'modal-origem';
+  nota.innerHTML = `📡 Registo proveniente de
+    <a href="${reg._no.url}" target="_blank" rel="noopener">${reg._no.nome}</a>`;
+  corpo.appendChild(nota);
+
+  document.getElementById('overlay').classList.add('aberto');
+  document.body.style.overflow = 'hidden';
+}
+  
 // ── Estatísticas ──────────────────────────────────────────────────────────────
 
 async function carregarGraficos() {
@@ -1234,6 +1514,7 @@ function renderGrafico(containerId, dados, classeBarrra) {
 async function pesquisar(pagina) {
   paginaAtual = pagina || 1;
   esconderInterpretacao();
+
   const q      = document.getElementById('campoPesquisa').value.trim();
   const tipo   = document.getElementById('filtrTipo').value;
   const anoMin = document.getElementById('filtrAnoMin').value;
@@ -1248,9 +1529,20 @@ async function pesquisar(pagina) {
   if (fonte)  params.set('fonte', fonte);
 
   mostrarCarregando();
+
   try {
-    const r = await fetch(`${API}/api/pesquisar?${params}`);
-    const d = await r.json();
+    let d;
+    if (modoFederado) {
+      // Limitar por_pagina no modo federado (agrega de vários nós)
+      params.set('por_pagina', 200);
+      d = await _fetchFederado(params);
+      mostrarEstadoFederado(d);
+    } else {
+      const r = await fetch(`${API}/api/pesquisar?${params}`);
+      d = await r.json();
+      esconderEstadoFederado();
+    }
+
     todosResultados = d.resultados;
     facetasActivas  = {};
     anoMinActivo    = 1500;
@@ -1359,35 +1651,47 @@ function renderResultados(d, q) {
 
 function renderCards(resultados) {
   const lista = document.getElementById('listaResultados');
-  if (resultados.length === 0) {
+  if (!resultados.length) {
     lista.innerHTML = `<div class="estado"><div class="estado-icon">🔍</div>
       <p>Nenhum resultado com os filtros seleccionados.</p></div>`;
     return;
   }
+
   const q = document.getElementById('campoPesquisa').value.trim();
   lista.innerHTML = '';
-  resultados.forEach(reg => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.dataset.tipo = reg.tipo;
-    const tipoLabel = { batismo:'Batismo', casamento:'Casamento', obito:'Óbito' }[reg.tipo];
-    const detalhes  = [];
-    if (reg.data) detalhes.push(reg.data);
-    if (reg.local && reg.local !== 'n/d') detalhes.push(reg.local);
-    const pais = [reg.pai, reg.mae].filter(p => p && p !== 'n/d').join(' & ');
-    if (pais) detalhes.push(`Fil. ${pais}`);
-    card.innerHTML = `
-      <span class="badge badge-${reg.tipo}">${tipoLabel}</span>
-      <div>
-        <div class="card-nome">${destacar(reg.nome || '—', q)}</div>
-        <div class="card-detalhe">${detalhes.join(' · ')}</div>
-      </div>
-      <div class="card-ano">${reg.ano || '—'}</div>`;
-    card.addEventListener('click', () => abrirDetalhe(reg.tipo, reg.id));
-    lista.appendChild(card);
-  });
-}
 
+  if (modoFederado) {
+    // Agrupar por arquivo de origem
+    const grupos = new Map();
+    resultados.forEach(r => {
+      const chave = r._no?.url || 'local';
+      if (!grupos.has(chave)) grupos.set(chave, { no: r._no, items: [] });
+      grupos.get(chave).items.push(r);
+    });
+
+    grupos.forEach(({ no, items }) => {
+      const isLocal = no?.local ?? true;
+      const sep = document.createElement('div');
+      sep.className = 'grupo-origem';
+      sep.innerHTML = `
+        <span class="grupo-origem-dot"
+              style="background:${isLocal ? 'var(--laranja)' : 'var(--azul-medio)'}"></span>
+        ${no?.nome || 'Este arquivo'}
+        <span style="font-weight:400;color:var(--texto-sub)">(${items.length})</span>
+        ${!isLocal && no?.url
+          ? `<a href="${no.url}" target="_blank" rel="noopener"
+               style="margin-left:auto;font-size:0.65rem;color:var(--azul-medio);
+                      text-decoration:none;opacity:0.7"
+               onclick="event.stopPropagation()">↗ visitar</a>`
+          : ''}`;
+      lista.appendChild(sep);
+      items.forEach(reg => lista.appendChild(_criarCard(reg, q)));
+    });
+  } else {
+    resultados.forEach(reg => lista.appendChild(_criarCard(reg, q)));
+  }
+}
+  
 function destacar(texto, q) {
   if (!q || !texto) return texto;
   const termos = q.trim().split(/\s+/).map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
