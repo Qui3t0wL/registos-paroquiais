@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Administração · Registos Paroquiais</title>
+<title>Liber · Registos Paroquiais</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
@@ -54,10 +54,10 @@
 	}
 	.logo-icon {
 	  width: 32px; height: 32px;
+		min-width: 32px;
 	  background: #F4794A;
 	  border-radius: 6px;
 	  display: flex; align-items: center; justify-content: center;
-	  font-size: 16px;
 	  flex-shrink: 0;
 	}
 	.logo-texto {
@@ -565,7 +565,7 @@
 	
 	/* ── Mobile pequeno (≤ 375px) ── */
 	@media (max-width: 375px) {
-	  .logo-icon { width: 26px; height: 26px; font-size: 13px; }
+	  .logo-icon { width: 26px; height: 26px; min-width: 26px; }
 	  h2 { font-size: 1rem; }
 	}
 </style>
@@ -588,7 +588,7 @@
 	  </svg>
 	</div>
     <div>
-      <div class="logo-texto">Registos Paroquiais</div>
+      <div class="logo-texto">Liber</div>
       <div class="logo-sub">Administração</div>
     </div>
   </div>
@@ -1596,7 +1596,11 @@ carregarNos();
 <footer>
   <div class="footer-inner">
     <p class="footer-principal" id="footerAdminTexto"></p>
-    <p class="footer-rodape">Plataforma produzida com auxílio de Inteligência Artificial · 2026</p>
+    <p class="footer-rodape" style="text-align:center">
+	  Projecto <a href="https://github.com/Qui3t0wL/Liber" target="_blank" rel="noopener"
+		style="color:#BDC3C2;text-decoration:underline;text-underline-offset:3px">Liber</a>
+	  · Desenvolvido com auxílio de Inteligência Artificial · 2026
+	</p>
   </div>
 </footer>
 </body>
