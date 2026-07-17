@@ -90,6 +90,22 @@ class Database:
         ON auditoria (ip)
         """)
 
+		# Configurações da instância
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS configuracoes (
+            chave   TEXT PRIMARY KEY,
+            valor   TEXT NOT NULL
+        )
+        """)
+
+        # Footer por defeito — só inserido se ainda não existir
+        cur.execute("""
+            INSERT OR IGNORE INTO configuracoes (chave, valor) VALUES (
+                'footer_texto',
+                'Exclusão de responsabilidade: A informação disponível nesta plataforma foi recolhida a partir de registos paroquiais disponíveis online em https://digitarq.arquivos.pt/. É possível que existam eventuais erros de transcrição.'
+            )
+        """)
+		
         # Batismos
         cur.execute("""
         CREATE TABLE IF NOT EXISTS batismos (
@@ -187,6 +203,26 @@ class Database:
         conn.commit()
         conn.close()
         self._criar_tabelas_federacao()
+
+	# ── Configurações ─────────────────────────────────────────────────────────
+
+    def obter_configuracao(self, chave: str) -> Optional[str]:
+        conn = self._conn()
+        cur = conn.cursor()
+        cur.execute("SELECT valor FROM configuracoes WHERE chave = ?", (chave,))
+        row = cur.fetchone()
+        conn.close()
+        return row[0] if row else None
+
+    def definir_configuracao(self, chave: str, valor: str):
+        conn = self._conn()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT OR REPLACE INTO configuracoes (chave, valor) VALUES (?, ?)",
+            (chave, valor)
+        )
+        conn.commit()
+        conn.close()
 
     # ── Pesquisa unificada ────────────────────────────────────────────────────
     def pesquisar(
