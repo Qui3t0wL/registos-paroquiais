@@ -41,7 +41,7 @@
   header {
     background: var(--azul-escuro);
     color: var(--branco);
-    padding: 0 2rem;
+    padding: 0 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -50,11 +50,13 @@
     top: 0;
     z-index: 50;
     box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+    gap: 0.5rem;
   }
   .logo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    flex-shrink: 0;
   }
   .logo-icon {
     width: 32px; height: 32px;
@@ -904,7 +906,7 @@
 <header>
   <div class="logo">
     <div class="logo-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="18" height="18" style="display:block;flex-shrink:0">
         <rect x="1" y="1" width="14" height="22" rx="1" fill="#ffffff"/>
         <rect x="17" y="1" width="14" height="22" rx="1" fill="#ffffff"/>
         <rect x="14" y="1" width="4" height="22" fill="#F4794A"/>
