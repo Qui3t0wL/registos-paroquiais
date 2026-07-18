@@ -155,7 +155,7 @@ class ExcelImporter:
         self.db = db
 
     def validar_e_importar(
-        self, conteudo: bytes, tipo: str, nome_ficheiro: str, dry_run: bool, freguesia: str = None
+        self, conteudo: bytes, tipo: str, nome_ficheiro: str, dry_run: bool,freguesia: str = None, modo_actualizacao: bool = False
     ) -> dict:
         mapa = MAPA_COLUNAS[tipo]
         obrigatorios = CAMPOS_OBRIGATORIOS[tipo]
@@ -191,6 +191,7 @@ class ExcelImporter:
 
         # 2. Duplicados contra a base de dados existente
         dup_bd, registos_novos = self._detectar_duplicados_bd(registos_unicos, tipo)
+        registos_unicos_antes_bd = registos_unicos  # guardar para actualização
         for desc in dup_bd:
             todos_avisos.append(f"Já existe na BD: {desc}")
 
@@ -213,6 +214,11 @@ class ExcelImporter:
         }
 
         if not dry_run and not erros_criticos:
+            if modo_actualizacao and dup_bd:
+                total_actualizados = self._actualizar_duplicados_bd(registos_unicos_antes_bd, tipo)
+            else:
+                total_actualizados = 0
+                
             upload_id = self.db.criar_upload(
                 nome_ficheiro, tipo, len(registos_novos), len(todos_avisos), freguesia
             )
@@ -227,18 +233,36 @@ class ExcelImporter:
             elif tipo == "obito":
                 self.db.inserir_obitos(registos_novos, upload_id)
             resumo["upload_id"] = upload_id
-            if total_duplicados > 0:
-                resumo["mensagem"] = (
-                    f"{len(registos_novos)} registos importados. "
-                    f"{total_duplicados} duplicado(s) ignorado(s)."
-                )
-            else:
-                resumo["mensagem"] = f"{len(registos_novos)} registos importados com sucesso."
+            resumo["total_actualizados"] = total_actualizados
+            
+            partes = []
+            if registos_novos:
+                partes.append(f"{len(registos_novos)} registos novos importados")
+            if total_actualizados:
+                partes.append(f"{total_actualizados} actualizados")
+            if total_duplicados and not modo_actualizacao:
+                partes.append(f"{total_duplicados} duplicado(s) ignorados")
+            resumo["mensagem"] = ". ".join(partes) + "." if partes else "Nenhuma alteração efectuada."
         elif not dry_run and erros_criticos:
             resumo["sucesso"] = False
             resumo["mensagem"] = "Importação cancelada devido a erros críticos."
 
         return resumo
+
+    def _actualizar_duplicados_bd(self, registos: list, tipo: str) -> int:
+        """Actualiza na BD os registos que já existem. Devolve o número de registos actualizados."""
+        total = 0
+        for reg in registos:
+            chave = _chave_registo(reg, tipo)
+            if chave[1] == "ref":
+                fonte    = reg.get("fonte", "")
+                nr_ordem = reg.get("nr_ordem", "")
+                if self.db.actualizar_registo_por_ref(tipo, fonte, nr_ordem, reg):
+                    total += 1
+            else:
+                if self.db.actualizar_registo_por_bio(tipo, chave, reg):
+                    total += 1
+        return total
 
     def _detectar_duplicados_intra(
         self, registos: list, tipo: str
