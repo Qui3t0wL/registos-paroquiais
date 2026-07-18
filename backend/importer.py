@@ -239,10 +239,10 @@ class ExcelImporter:
             if registos_novos:
                 partes.append(f"{len(registos_novos)} registos novos importados")
             if total_actualizados:
-                partes.append(f"{total_actualizados} actualizados")
+                partes.append(f"{total_actualizados} atualizados")
             if total_duplicados and not modo_actualizacao:
                 partes.append(f"{total_duplicados} duplicado(s) ignorados")
-            resumo["mensagem"] = ". ".join(partes) + "." if partes else "Nenhuma alteração efectuada."
+            resumo["mensagem"] = ". ".join(partes) + "." if partes else "Nenhuma alteração efetuada."
         elif not dry_run and erros_criticos:
             resumo["sucesso"] = False
             resumo["mensagem"] = "Importação cancelada devido a erros críticos."
