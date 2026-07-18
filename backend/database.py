@@ -275,7 +275,7 @@ class Database:
             """
         else:
             tabela = "obitos"
-            campos_nome = ["nome", "pai", "mae"]
+            campos_nome = ["nome", "pai", "mae", "notas"]
             select = """
                 SELECT id, 'obito' as tipo, fonte, ano, nome,
                        data_obito as data, local_falecimento as local,
