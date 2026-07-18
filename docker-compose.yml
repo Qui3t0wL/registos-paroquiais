@@ -6,7 +6,7 @@ services:
     container_name: registos-paroquiais
     restart: unless-stopped
     ports:
-      - "8000:8000"       # Expor apenas na rede local; não abrir no router para a Internet
+      - "9000:9000"       # Expor apenas na rede local; não abrir no router para a Internet
     volumes:
       - ./data:/data      # Base de dados persistente
       - ./frontend:/app/frontend:ro
