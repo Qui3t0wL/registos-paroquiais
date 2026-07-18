@@ -512,7 +512,7 @@ class Database:
 	    conn.close()
 	    return alterado
 	
-	def actualizar_registo_por_bio(self, tipo: str, chave: tuple, reg: dict) -> bool:
+    def actualizar_registo_por_bio(self, tipo: str, chave: tuple, reg: dict) -> bool:
 	    """Actualiza um registo existente identificado por campos biográficos. Devolve True se actualizou."""
 	    tabela = {"batismo": "batismos", "casamento": "casamentos", "obito": "obitos"}[tipo]
 	    campos_excluir = {"_folha", "_nr_linha"}
