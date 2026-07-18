@@ -63,7 +63,8 @@ class Database:
             codigo_adist TEXT,
             data_upload TEXT NOT NULL,
             registos    INTEGER DEFAULT 0,
-            avisos      INTEGER DEFAULT 0
+            avisos      INTEGER DEFAULT 0,
+			substitui_upload_id INTEGER
         )
         """)
 
@@ -477,18 +478,65 @@ class Database:
         conn.close()
 
     def criar_upload(self, ficheiro: str, tipo: str, registos: int,
-                     avisos: int, freguesia: str = None) -> int:
-        conn = self._conn()
-        cur = conn.cursor()
-        cur.execute("""
-            INSERT INTO uploads (ficheiro, tipo, freguesia, data_upload, registos, avisos)
-            VALUES (?, ?, ?, ?, ?, ?)
-        """, (ficheiro, tipo, freguesia,
-              datetime.now().isoformat(timespec="seconds"), registos, avisos))
-        upload_id = cur.lastrowid
-        conn.commit()
-        conn.close()
-        return upload_id
+	                 avisos: int, freguesia: str = None,
+	                 substitui_upload_id: int = None) -> int:
+	    conn = self._conn()
+	    cur = conn.cursor()
+	    cur.execute("""
+	        INSERT INTO uploads (ficheiro, tipo, freguesia, data_upload, registos, avisos, substitui_upload_id)
+	        VALUES (?, ?, ?, ?, ?, ?, ?)
+	    """, (ficheiro, tipo, freguesia,
+	          datetime.now().isoformat(timespec="seconds"), registos, avisos, substitui_upload_id))
+	    upload_id = cur.lastrowid
+	    conn.commit()
+	    conn.close()
+	    return upload_id
+
+	def actualizar_registo_por_ref(self, tipo: str, fonte: str, nr_ordem: str, reg: dict) -> bool:
+	    """Actualiza um registo existente identificado por fonte+nr_ordem. Devolve True se actualizou."""
+	    tabela = {"batismo": "batismos", "casamento": "casamentos", "obito": "obitos"}[tipo]
+	    campos_excluir = {"_folha", "_nr_linha", "fonte", "nr_ordem"}
+	    campos = {k: v for k, v in reg.items() if k not in campos_excluir}
+	    if not campos:
+	        return False
+	    set_clause = ", ".join(f"{c} = ?" for c in campos)
+	    valores = list(campos.values()) + [fonte, nr_ordem]
+	    conn = self._conn()
+	    cur = conn.cursor()
+	    cur.execute(
+	        f"UPDATE {tabela} SET {set_clause} WHERE LOWER(fonte) = LOWER(?) AND LOWER(nr_ordem) = LOWER(?)",
+	        valores,
+	    )
+	    alterado = cur.rowcount > 0
+	    conn.commit()
+	    conn.close()
+	    return alterado
+	
+	def actualizar_registo_por_bio(self, tipo: str, chave: tuple, reg: dict) -> bool:
+	    """Actualiza um registo existente identificado por campos biográficos. Devolve True se actualizou."""
+	    tabela = {"batismo": "batismos", "casamento": "casamentos", "obito": "obitos"}[tipo]
+	    campos_excluir = {"_folha", "_nr_linha"}
+	    campos = {k: v for k, v in reg.items() if k not in campos_excluir}
+	    conn = self._conn()
+	    cur = conn.cursor()
+	    if tipo == "batismo":
+	        _, _, ano, nome, pai, mae = chave
+	        where = "ano = ? AND LOWER(nome) = LOWER(?) AND LOWER(COALESCE(pai,'')) = LOWER(?) AND LOWER(COALESCE(mae,'')) = LOWER(?)"
+	        params = list(campos.values()) + [ano, nome, pai, mae]
+	    elif tipo == "casamento":
+	        _, _, ano, noivo, noiva = chave
+	        where = "ano = ? AND LOWER(noivo) = LOWER(?) AND LOWER(noiva) = LOWER(?)"
+	        params = list(campos.values()) + [ano, noivo, noiva]
+	    else:
+	        _, _, ano, nome, pai, mae = chave
+	        where = "ano = ? AND LOWER(nome) = LOWER(?) AND LOWER(COALESCE(pai,'')) = LOWER(?) AND LOWER(COALESCE(mae,'')) = LOWER(?)"
+	        params = list(campos.values()) + [ano, nome, pai, mae]
+	    set_clause = ", ".join(f"{c} = ?" for c in campos)
+	    cur.execute(f"UPDATE {tabela} SET {set_clause} WHERE {where}", params)
+	    alterado = cur.rowcount > 0
+	    conn.commit()
+	    conn.close()
+	    return alterado
 
     def registar_acesso(self, ip: str, endpoint: str, metodo: str, 
                          status: int, user_agent: str):
