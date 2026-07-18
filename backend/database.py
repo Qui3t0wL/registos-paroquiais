@@ -492,7 +492,7 @@ class Database:
 	    conn.close()
 	    return upload_id
 
-	def actualizar_registo_por_ref(self, tipo: str, fonte: str, nr_ordem: str, reg: dict) -> bool:
+    def actualizar_registo_por_ref(self, tipo: str, fonte: str, nr_ordem: str, reg: dict) -> bool:
 	    """Actualiza um registo existente identificado por fonte+nr_ordem. Devolve True se actualizou."""
 	    tabela = {"batismo": "batismos", "casamento": "casamentos", "obito": "obitos"}[tipo]
 	    campos_excluir = {"_folha", "_nr_linha", "fonte", "nr_ordem"}
