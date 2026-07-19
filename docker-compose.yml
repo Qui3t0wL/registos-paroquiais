@@ -15,7 +15,7 @@ services:
     build: ./backend
     container_name: liber-dev
     ports:
-      - "8001:8000"
+      - "9000:8000"
     volumes:
       - ./data-dev:/data
       - ./frontend:/app/frontend:ro
