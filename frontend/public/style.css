@@ -814,10 +814,13 @@ footer {
   .painel-pesquisa { padding: 0.9rem; }
   .campo-principal { display: block; }
   .campo-principal input { display: block; width: 100%; font-size: 0.9rem; padding: 0.6rem 0.8rem; margin-bottom: 0.4rem; }
-  /*.btns-pesquisa { display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.4rem; width: 100%; }*/
+  /*.btns-pesquisa { display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.4rem; width: 100%; }
   .btns-pesquisa { display: grid; grid-template-columns: 1fr 1.3fr 38px; gap: 0.4rem; width: 100%; }
   .btn-pesquisar { padding: 0.6rem 0.5rem; font-size: 0.78rem; text-align: center; }
-  .btn-ajuda { width: 38px; }
+  .btn-ajuda { width: 38px; }*/
+  .btns-pesquisa { display: flex; gap: 0.4rem; width: 100%; }
+  .btn-pesquisar { flex: 1; justify-content: center; }
+  .btn-ajuda { flex: 0 0 38px; }
 
   /* Filtros */
   .filtros { flex-direction: column; gap: 0.5rem; }
