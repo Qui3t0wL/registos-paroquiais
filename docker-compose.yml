@@ -8,8 +8,8 @@ services:
     ports:
       - "9000:8000"
     volumes:
-      - ./data-dev:/data
+      - ./data:/data
       - ./frontend:/app/frontend:ro
     env_file: .env.dev
     environment:
-      - DB_PATH=/data-dev/registos.db
+      - DB_PATH=/data/registos.db
