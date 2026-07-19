@@ -736,6 +736,7 @@ footer {
 
   /* Filtros */
   .filtros { flex-direction: column; gap: 0.5rem; }
+  .filtro-grupo { width: 100%; }
   .filtro-grupo select,
   .filtro-grupo input { width: 100%; max-width: 100%; }
   .filtro-anos { width: 100%; }
