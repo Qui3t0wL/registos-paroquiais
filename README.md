@@ -68,7 +68,7 @@ A base de dados é guardada na pasta `data/` do projecto, persistindo entre rein
 Acessível em `http://<ip-do-servidor>:8000`
 
 Para expor à Internet, configure o router para reencaminhar a porta 8000,
-ou use um proxy reverso (nginx/Caddy) com HTTPS.
+ou use um reverse proxy (nginx/Caddy) com HTTPS.
 
 ### Interface de administração
 Acessível em `http://<ip-do-servidor>:8000/admin`
@@ -77,7 +77,7 @@ Acessível em `http://<ip-do-servidor>:8000/admin`
 de IPs externos com erro 403. A verificação é feita nos prefixos
 `127.`, `192.168.`, `10.` e `172.`.
 
-Se usar um proxy reverso (ex: nginx), adicione também uma regra para
+Se usar um reverse proxy (ex: nginx), adicione também uma regra para
 bloquear o acesso externo a `/admin`:
 
 ```nginx
