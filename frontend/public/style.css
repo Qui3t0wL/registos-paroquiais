@@ -877,6 +877,12 @@ footer {
   .footer-principal { font-size: 0.75rem; }
 }
 
+@media (max-width: 640px) {
+  .painel-pesquisa { background: red !important; }
+  .campo-principal { background: blue !important; }
+  .campo-principal input { background: green !important; }
+}
+
 @media (max-width: 375px) {
   .stat-valor { font-size: 0.95rem; }
   .btns-pesquisa { grid-template-columns: 1fr auto auto; }
