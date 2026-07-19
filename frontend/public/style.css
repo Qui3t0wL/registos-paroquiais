@@ -53,6 +53,9 @@ html.dark .badge-batismo   { background: #1a2d3d; color: #7ab0d8; }
 html.dark .badge-casamento { background: #0d2820; color: #4aaa96; }
 html.dark .badge-obito     { background: #251535; color: #b07ad8; }
 
+/* Botão pesquisar */
+html.dark .btn-pesquisar { var(--cinza);}
+
 /* Botão federado */
 html.dark .btn-federado         { background: #1e2d45; }
 html.dark .btn-federado:hover   { background: #263a58; }
