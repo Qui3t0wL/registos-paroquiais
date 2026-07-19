@@ -811,10 +811,10 @@ footer {
 
   /* Painel de pesquisa */
   .painel-pesquisa { padding: 0.9rem; }
-  .campo-principal { flex-direction: column; gap: 0.4rem; align-items: stretch; }
-  .campo-principal input { font-size: 0.9rem; padding: 0.6rem 0.8rem; width: 100%; min-width: 0; }
-  .btns-pesquisa { display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.4rem; width: 100%; min-width: 0; }
-  .btn-pesquisar { padding: 0.6rem 0.5rem; font-size: 0.78rem; text-align: center; min-width: 0; }
+  .campo-principal { display: block; }
+  .campo-principal input { display: block; width: 100%; font-size: 0.9rem; padding: 0.6rem 0.8rem; margin-bottom: 0.4rem; }
+  .btns-pesquisa { display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.4rem; width: 100%; }
+  .btn-pesquisar { padding: 0.6rem 0.5rem; font-size: 0.78rem; text-align: center; }
   .btn-ajuda { width: 38px; }
 
   /* Filtros */
