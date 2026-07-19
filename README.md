@@ -8,7 +8,7 @@ e área de administração para importação de ficheiros Excel.
 ## Estrutura do projeto
 
 ```
-registos-paroquiais/
+Liber/
 ├── backend/
 │   ├── main.py          # API FastAPI + middleware de segurança
 │   ├── database.py      # Camada SQLite + pesquisa normalizada
