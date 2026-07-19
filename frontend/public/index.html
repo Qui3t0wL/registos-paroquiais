@@ -8,6 +8,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<script>
+  (function(){
+    const s = localStorage.getItem('dark');
+    const p = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (s === '1' || (s === null && p)) document.documentElement.classList.add('dark');
+  })();
+</script>
 <link rel="stylesheet" href="/static/style.css">
 <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 </head>
@@ -26,6 +33,7 @@
   <nav class="header-nav">
     <button class="btn-nav ativo" onclick="mostrarVista('pesquisa')">Pesquisa</button>
     <button class="btn-nav" onclick="mostrarVista('estatisticas')">Estatísticas</button>
+    <button class="btn-dark-toggle" id="btnDarkToggle" onclick="toggleDark()" title="Modo claro / escuro" aria-label="Alternar modo escuro">🌙</button>
   </nav>
 </header>
 
