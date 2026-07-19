@@ -15,6 +15,72 @@
   --obito:        #7C5C8A;
 }
 
+/* ══════════════════════════════════════
+   MODO ESCURO
+   ══════════════════════════════════════ */
+html.dark {
+  /* Superfícies e fundos */
+  --bg:           #0f1117;
+  --branco:       #1a1d2b;
+  --cinza-claro:  #252836;
+
+  /* Bordas e divisores */
+  --linha:        #2d3148;
+
+  /* Textos */
+  --texto:        #e2e4ed;
+  --texto-sub:    #8b92a8;
+  --cinza:        #6b7280;
+
+  /* Cores de marca — mantêm-se iguais */
+  --laranja:      #F4794A;
+  --laranja-soft: #6b3020;
+
+  /* Superfícies de navegação */
+  --azul-escuro:  #111320;
+  --azul-medio:   #1e2a38;
+
+  /* Tipos de registo — ligeiramente mais brilhantes para contrastar no escuro */
+  --batismo:      #6a9ab8;
+  --casamento:    #4aaa96;
+  --obito:        #a07ab8;
+}
+
+/* Correcções para cores hardcoded que não usam variáveis */
+
+/* Badges dos cards — cores fixas que ficam ilegíveis no escuro */
+html.dark .badge-batismo   { background: #1a2d3d; color: #7ab0d8; }
+html.dark .badge-casamento { background: #0d2820; color: #4aaa96; }
+html.dark .badge-obito     { background: #251535; color: #b07ad8; }
+
+/* Botão federado */
+html.dark .btn-federado         { background: #1e2d45; }
+html.dark .btn-federado:hover   { background: #263a58; }
+html.dark .btn-federado.activo  { background: #111e30; }
+
+/* Ajuda — query em monospace ficava escura sobre fundo escuro */
+html.dark .ajuda-query { color: #8bb8d8; }
+
+/* Footer — cores fixas que precisam de ajuste */
+html.dark .footer-principal { color: #6b7280; }
+html.dark .footer-rodape    { color: #4b5263; }
+
+/* Botão toggle modo escuro */
+.btn-dark-toggle {
+  width: 34px; height: 34px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: var(--cinza);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.btn-dark-toggle:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
