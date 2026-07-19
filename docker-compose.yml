@@ -3,7 +3,7 @@ version: "3.9"
 services:
   backend:
     build: ./backend
-    #container_name: registos-paroquiais
+    container_name: liber-dev
     restart: unless-stopped
     ports:
       - "9000:9000"       # Expor apenas na rede local; não abrir no router para a Internet
