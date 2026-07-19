@@ -1,11 +1,11 @@
-# Registos Paroquiais
+# Liber - Registos Paroquiais
 
 Arquivo digital de batismos, casamentos e óbitos com interface de pesquisa pública
 e área de administração para importação de ficheiros Excel.
 
 ---
 
-## Estrutura do projecto
+## Estrutura do projeto
 
 ```
 registos-paroquiais/
@@ -19,9 +19,13 @@ registos-paroquiais/
 │   └── Dockerfile
 ├── frontend/
 │   ├── public/
-│   │   └── index.html   # Interface pública de pesquisa
+│   │   ├── index.html   # Interface pública de pesquisa
+│   │   ├── app.js       # Lógica do frontend público
+│   │   └── style.css    # Estilos do frontend público
 │   └── admin/
-│       └── index.html   # Interface de administração
+│       ├── index.html   # Interface de administração
+│       ├── app.js       # Lógica do frontend público
+│       └── style.css    # Estilos do frontend público
 ├── data/                # Criada automaticamente (base de dados)
 ├── docker-compose.yml
 └── README.md
@@ -106,23 +110,31 @@ o botão correspondente e o fallback por padrões regex é utilizado no endpoint
 
 1. Aceda a `http://<servidor>/admin` (na rede local)
 2. Seleccione o **tipo de registo** (Batismos / Casamentos / Óbitos)
-3. Seleccione a **freguesia** (campo com autocomplete com as já importadas)
-4. Carregue o ficheiro Excel (.xlsx ou .xls, máx. 50 MB)
-5. Clique em **Validar ficheiro** — o sistema analisa todas as folhas
-   e apresenta um relatório com:
+3. Indique a **freguesia** — o campo tem autocomplete com as freguesias já importadas
+4. Carregue o ficheiro Excel
+5. Clique em **Validar ficheiro** — o sistema analisa todas as folhas e apresenta um relatório com:
    - Número de registos encontrados
    - Avisos (campos em falta, anos fora do intervalo esperado, colunas não reconhecidas)
    - Erros críticos (colunas obrigatórias em falta)
+   - Duplicados detectados (dentro do ficheiro e face à base de dados)
 6. Se não houver erros críticos, clique em **Importar**
+
+### Modo de actualização
+
+Por omissão, registos duplicados são ignorados na importação. Activando a opção
+**"Actualizar registos existentes"**, o sistema actualiza os registos já existentes
+na base de dados em vez de os descartar, usando como chave de identificação a
+referência de arquivo (`FONTE` + `Nº ORDEM`) ou, na sua ausência, os campos
+biográficos (nome, ano, pai, mãe).
 
 ### Notas sobre o Excel
 - Cada ficheiro pode ter várias folhas (por exemplo por século: 1700–1799, 1800–1899, etc.)
 - Todas as folhas são processadas e importadas de uma vez
 - A primeira linha não vazia com 3 ou mais colunas preenchidas é tratada como cabeçalho
-- O campo `FONTE` é a referência da fonte (ex: `PT/ADSTR/PRQ/PABT06/002/0011`) — o código
-  da parish (`PABT06`) é extraído automaticamente e guardado no registo de upload
+- O campo `FONTE` deve conter a referência do arquivo (ex: `PT/ADSTR/PRQ/PABT06/002/0011`) — o código da paróquia (ex: `PABT06`) é extraído automaticamente e associado à freguesia
 - O campo `IDADE/DNASC` é tratado como texto (pode conter idade ou data de nascimento)
 - Linhas completamente vazias são ignoradas
+- Ficheiros aceites: `.xlsx` e `.xls` (máx. 50 MB)
 - Anos válidos: 1400–2100 (fora deste intervalo gera aviso, mas não bloqueia a importação)
 
 ### Colunas esperadas
@@ -159,9 +171,9 @@ A interface pública permite pesquisar por texto livre. A pesquisa é:
   3. Todos os tokens presentes em qualquer ordem
 
 Campos pesquisados por tipo:
-- **Batismos:** nome, pai, mãe, avô/avó paterno/a, avô/avó materno/a
-- **Casamentos:** noivo, noiva, pai/mãe do noivo, pai/mãe da noiva, testemunhas
-- **Óbitos:** nome, pai, mãe
+- **Batismos:** nome, pai, mãe, avô/avó paterno/a, avô/avó materno/a, notas
+- **Casamentos:** noivo, noiva, pai/mãe do noivo, pai/mãe da noiva, testemunhas, notas
+- **Óbitos:** nome, pai, mãe, notas
 
 ### Pesquisa IA (linguagem natural)
 O botão **✦ Pesquisa IA** envia a query para o Claude Haiku, que extrai campos
