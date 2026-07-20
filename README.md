@@ -5,7 +5,7 @@
   </tr>
 </table>
 
-<img src="frontend/public/favicon.svg" width="40" alt="Liber" align="left">
+<img src="frontend/public/favicon.svg" width="36" alt="Liber" align="left">
 
 # Liber · Registos Paroquiais
 
