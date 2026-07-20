@@ -230,7 +230,7 @@ A vista de estatísticas (separador no cabeçalho) apresenta:
 
 A aplicação implementa um conjunto de controlos de segurança baseados nas recomendações OWASP:
 
-### Rate limiting
+### _Rate limiting_
 Limites por IP com bloqueio automático de 5 minutos após exceder o limite:
 
 | Endpoint | Limite |
@@ -273,7 +273,7 @@ Os registos de auditoria são limpos automaticamente após 90 dias.
 ### Outros controlos
 - Documentação da API (`/docs`, `/redoc`) desativada
 - Área de admin restrita a IPs de rede local
-- Logs de segurança com nível WARNING para eventos suspeitos (rate limit, padrões maliciosos, acesso externo a admin)
+- Logs de segurança com nível WARNING para eventos suspeitos (_rate limit_, padrões maliciosos, acesso externo a admin)
 
 ---
 
@@ -289,7 +289,7 @@ Os registos de auditoria são limpos automaticamente após 90 dias.
 - Totalmente responsiva: desktop, tablet, mobile (≤640 px e ≤375 px)
 
 ### Administração
-- Upload com 'drag & drop' e relatório de validação antes de confirmar
+- Upload com _drag & drop_ e relatório de validação antes de confirmar
 - Campo de freguesia com _autocomplete_ (sugere as já importadas)
 - Histórico de importações com tipo, período e número de registos
 - Reset da base de dados com dupla confirmação
