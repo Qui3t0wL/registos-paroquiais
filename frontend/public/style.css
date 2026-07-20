@@ -318,7 +318,8 @@ header {
 .btn-ia:hover { background: #e8623a; }
 .btn-ia svg { width: 13px; height: 13px; }
 .btn-ajuda {
-  width: 36px; height: 36px;
+  width: 36px;
+  height: auto; /* alterado */
   border-radius: 6px;
   border: 1.5px solid var(--linha);
   background: var(--branco);
@@ -329,6 +330,7 @@ header {
   transition: all 0.15s;
   flex-shrink: 0;
   align-self: center; /* adicionado */
+  padding: 0.65rem 0;
 }
 .btn-ajuda:hover { border-color: var(--azul-medio); color: var(--azul-medio); }
 
