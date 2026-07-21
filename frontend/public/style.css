@@ -92,6 +92,10 @@ html.dark .ia-chip              { background: #1e2638; border-color: #6b3020; co
 /* Link "Registo proveniente de" no modal */
 html.dark .modal-origem a       { color: #7ab0d8; }
 
+/* no bloco html.dark */
+html.dark .fed-estado-label     { color: #7ab0d8; }
+html.dark .fed-chip             { background: rgba(106,154,184,0.15); color: #7ab0d8; }
+
 /* Botão toggle modo escuro */
 .btn-dark-toggle {
   width: 34px; height: 34px;
@@ -933,6 +937,13 @@ footer {
   flex-wrap: wrap;
 }
 .federado-estado.visivel { display: flex; }
+.fed-estado-label {
+  color: var(--azul-medio);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
 .fed-chip {
   font-size: 0.68rem;
   padding: 0.1rem 0.4rem;
