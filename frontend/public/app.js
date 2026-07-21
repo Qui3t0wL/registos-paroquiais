@@ -148,7 +148,7 @@ function mostrarEstadoFederado(d) {
   ].join('');
 
   el.innerHTML = `
-    <span style="color:var(--azul-medio);font-weight:500">${ICONE_REDE} Rede</span>
+    <span  class="fed-estado-label">${ICONE_REDE} Rede</span>
     <span style="color:var(--linha)">·</span>
     ${chips}
     ${nosErro.length
