@@ -68,9 +68,9 @@ html.dark .badge-casamento  { background: #0d2820; color: #4aaa96; }
 html.dark .badge-obito      { background: #251535; color: #b07ad8; }
 
 /* Botão federado */
-html.dark .btn-federado         { background: #1e2d45; color: #dde0eb; }
-html.dark .btn-federado:hover   { background: #263a58; }
-html.dark .btn-federado.activo  { background: #111e30; }
+html.dark .btn-federado         { background: #252938; color: #8b92a8; }
+html.dark .btn-federado:hover   { background: #2e3448; color: #dde0eb; }
+html.dark .btn-federado.activo  { background: #6b3020; color: #F4794A; box-shadow: inset 0 1px 3px rgba(0,0,0,0.4); }
 
 /* Ajuda: query em monospace */
 html.dark .ajuda-query      { color: #8bb8d8; }
@@ -81,6 +81,20 @@ html.dark .footer-rodape    { color: #4b5263; }
 
 html.dark .btn-pag.ativo        { background: #364a62; color: #dde0eb; border-color: #364a62; }
 html.dark .facetas-header       { background: #1e2638; color: #dde0eb; }
+
+/* Chips da barra de estado federado */
+html.dark .fed-chip             { background: rgba(106,154,184,0.15); color: #7ab0d8; }
+html.dark .fed-chip.erro        { background: rgba(204,68,68,0.12); color: #e07070; text-decoration: line-through; }
+
+/* Chips da interpretação IA (mesmo problema) */
+html.dark .ia-chip              { background: #1e2638; border-color: #6b3020; color: #dde0eb; }
+
+/* Link "Registo proveniente de" no modal */
+html.dark .modal-origem a       { color: #7ab0d8; }
+
+/* no bloco html.dark */
+html.dark .fed-estado-label     { color: #7ab0d8; }
+html.dark .fed-chip             { background: rgba(106,154,184,0.15); color: #7ab0d8; }
 
 /* Botão toggle modo escuro */
 .btn-dark-toggle {
@@ -902,7 +916,8 @@ footer {
 }
 .btn-federado:hover  { background: #4a5e8a; }
 .btn-federado.activo {
-  background: #1a3a5a;
+  background: #5a2810;
+  color: #F4794A;
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.35);
 }
 .btn-federado svg { width: 13px; height: 13px; flex-shrink: 0; }
@@ -922,6 +937,13 @@ footer {
   flex-wrap: wrap;
 }
 .federado-estado.visivel { display: flex; }
+.fed-estado-label {
+  color: var(--azul-medio);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
 .fed-chip {
   font-size: 0.68rem;
   padding: 0.1rem 0.4rem;
@@ -978,5 +1000,13 @@ footer {
 
 @media (max-width: 640px) {
   /* Ocultar botão Rede em mobile — pesquisa federada é mais lenta */
-  .btn-federado { display: none !important; }
+  /*.btn-federado { display: none !important; }*/
+  .btn-federado {
+    display: flex;
+    padding: 0.6rem;
+    min-width: 38px;
+    justify-content: center;
+  }
+  .btn-federado span.material-symbols-outlined { font-size: 18px; }
+  .btn-federado-texto { display: none; }
 }

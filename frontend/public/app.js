@@ -137,17 +137,18 @@ function mostrarEstadoFederado(d) {
   const nosErro  = d.nos_com_erro || [];
   const nRemoto  = (d.nos_consultados || 1) - 1;
   const nOk      = nRemoto - nosErro.length;
+  const ICONE_REDE = '<span class="material-symbols-outlined" style="font-size:14px;line-height:1;vertical-align:middle">network_node</span>';
 
   const chips = [
     `<span class="fed-chip">📖 Este arquivo</span>`,
     ...Array.from({length: nOk}, (_, i) =>
-      `<span class="fed-chip">📡 Nó ${i + 1}</span>`),
+      `<span class="fed-chip">${ICONE_REDE} Nó ${i + 1}</span>`),
     ...nosErro.map(n =>
       `<span class="fed-chip erro" title="${n.erro}">✕ ${n.nome}</span>`),
   ].join('');
 
   el.innerHTML = `
-    <span style="color:var(--azul-medio);font-weight:500">📡 Rede</span>
+    <span  class="fed-estado-label">${ICONE_REDE} Rede</span>
     <span style="color:var(--linha)">·</span>
     ${chips}
     ${nosErro.length
@@ -164,6 +165,7 @@ function esconderEstadoFederado() {
 
 function _criarCard(reg, q) {
   const card = document.createElement('div');
+  const ICONE_REDE = '<span class="material-symbols-outlined" style="font-size:14px;line-height:1;vertical-align:middle">network_node</span>';
   card.className = 'card';
   card.dataset.tipo = reg.tipo;
 
@@ -175,7 +177,7 @@ function _criarCard(reg, q) {
   if (pais) detalhes.push(`Fil. ${pais}`);
 
   const origemHtml = (modoFederado && reg._no && !reg._no.local)
-    ? `<div class="card-origem">📡 ${reg._no.nome}</div>`
+    ? `<div class="card-origem">${ICONE_REDE} ${reg._no.nome}</div>`
     : '';
 
   card.innerHTML = `
@@ -228,10 +230,11 @@ async function _abrirDetalheRemoto(reg) {
 
 function _renderModalRemoto(reg, dados) {
   const tipoLabel = { batismo:'Batismo', casamento:'Casamento', obito:'Óbito' }[reg.tipo];
+  const ICONE_REDE = '<span class="material-symbols-outlined" style="font-size:14px;line-height:1;vertical-align:middle">network_node</span>';
   document.getElementById('modalTipoBadge').innerHTML = `
     <span class="badge badge-${reg.tipo}">${tipoLabel}</span>
     <span style="font-size:0.68rem;color:var(--texto-sub);margin-left:0.4rem">
-      📡 ${reg._no?.nome || reg._no?.url}
+      ${ICONE_REDE} ${reg._no?.nome || reg._no?.url}
     </span>`;
 
   let titulo = reg.tipo === 'casamento'
@@ -263,7 +266,7 @@ function _renderModalRemoto(reg, dados) {
   // Rodapé com origem
   const nota = document.createElement('div');
   nota.className = 'modal-origem';
-  nota.innerHTML = `📡 Registo proveniente de
+  nota.innerHTML = `${ICONE_REDE} Registo proveniente de
     <a href="${reg._no.url}" target="_blank" rel="noopener">${reg._no.nome}</a>`;
   corpo.appendChild(nota);
 
