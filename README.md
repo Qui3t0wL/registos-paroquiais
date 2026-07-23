@@ -137,7 +137,7 @@ biográficos (nome, ano, pai, mãe).
 - Cada ficheiro pode ter várias folhas (por exemplo por século: 1700–1799, 1800–1899, etc.)
 - Todas as folhas são processadas e importadas de uma vez
 - A primeira linha não vazia com 3 ou mais colunas preenchidas é tratada como cabeçalho
-- O campo `FONTE` deve conter a referência do arquivo (ex: `PT/ADSTR/PRQ/PABT06/002/0011`) — o código da paróquia (ex: `PABT06`) é extraído automaticamente e associado à freguesia
+- O campo `FONTE` deve conter a referência do arquivo (ex: `PT-ADSTR-PRQ-PABT06-002-0011`) — o código da paróquia (ex: `PABT06`) é extraído automaticamente e associado à freguesia
 - O campo `IDADE/DNASC` é tratado como texto (pode conter idade ou data de nascimento)
 - Linhas completamente vazias são ignoradas
 - Ficheiros aceites: `.xlsx` e `.xls` (máx. 50 MB)
@@ -201,7 +201,7 @@ _fallback_ no servidor.
 Combinam com qualquer pesquisa:
 - **Tipo:** Batismos / Casamentos / Óbitos
 - **Período:** ano mínimo e máximo
-- **Fonte:** referência do arquivo (ex: `PT/ADSTR/PRQ/PABT06`)
+- **Fonte:** referência do arquivo (ex: `PT-ADSTR-PRQ-PABT06`)
 
 ### Facetas dinâmicas
 Após uma pesquisa com mais de um resultado, surge um painel lateral (desktop)
