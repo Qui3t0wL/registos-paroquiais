@@ -780,6 +780,15 @@ async def registo_proxy(
     except Exception as e:
         raise HTTPException(status_code=502, detail=str(e)[:120])
 
+# Paginas de erro 403/404
+@app.exception_handler(404)
+async def handler_404(request: Request, exc):
+    return HTMLResponse(open("frontend/public/404.html").read(), status_code=404)
+
+@app.exception_handler(403)
+async def handler_403(request: Request, exc):
+    return HTMLResponse(open("frontend/public/403.html").read(), status_code=403)
+    
 if __name__ == "__main__":
     db.criar_tabelas()
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
