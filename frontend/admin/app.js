@@ -455,26 +455,35 @@ function renderAuditoria(d) {
     </div>
 
     <!-- Eventos suspeitos -->
-    ${d.suspeitos.length > 0 ? `
-    <div class="painel" style="border-color:#c44030">
-      <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#c44030;margin-bottom:0.8rem">
-        ⚠ Eventos suspeitos (403 · 429 · 5xx)
-      </div>
-      <table class="tabela-historico">
-        <thead>
-          <tr><th>Data</th><th>IP</th><th>Endpoint</th><th>Status</th></tr>
-        </thead>
-        <tbody>
-          ${d.suspeitos.slice(0,20).map(r => `
-            <tr>
-              <td style="font-size:0.75rem;color:var(--texto-sub)">${r.data?.substring(0,16).replace('T',' ')}</td>
-              <td style="font-family:monospace;font-size:0.78rem">${r.ip}</td>
-              <td style="font-size:0.75rem;color:var(--texto-sub)">${r.endpoint}</td>
-              <td><span style="color:${r.status >= 500 ? '#c44030' : r.status === 429 ? '#c49a20' : '#8a5a00'};font-weight:600">${r.status}</span></td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
+		${d.suspeitos.length > 0 ? `
+		<div class="painel" style="border-color:#c44030;padding:0;overflow:hidden">
+		  <div style="display:flex;justify-content:space-between;align-items:center;
+		              padding:0.8rem 1rem;border-bottom:1px solid rgba(196,64,48,0.2)">
+		    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.08em;
+		                text-transform:uppercase;color:#c44030">
+		      ⚠ Eventos suspeitos (403 · 429 · 5xx)
+		    </div>
+		    <div style="font-size:0.72rem;color:var(--texto-sub)">${d.suspeitos.length} eventos</div>
+		  </div>
+		  <div style="max-height:320px;overflow-y:auto">
+		    <table class="tabela-historico" style="margin:0">
+		      <thead>
+		        <tr style="position:sticky;top:0;background:var(--bg2);z-index:1">
+		          <th>Data</th><th>IP</th><th>Endpoint</th><th>Status</th>
+		        </tr>
+		      </thead>
+		      <tbody>
+		        ${d.suspeitos.map(r => `
+	            <tr>
+	              <td style="font-size:0.75rem;color:var(--texto-sub)">${r.data?.substring(0,16).replace('T',' ')}</td>
+	              <td style="font-family:monospace;font-size:0.78rem">${r.ip}</td>
+	              <td style="font-size:0.75rem;color:var(--texto-sub)">${r.endpoint}</td>
+	              <td><span style="color:${r.status >= 500 ? '#c44030' : r.status === 429 ? '#c49a20' : '#8a5a00'};font-weight:600">${r.status}</span></td>
+	            </tr>
+	          `).join('')}
+	        </tbody>
+	      </table>
+		  </div>
     </div>` : ''}
   `;
 }
